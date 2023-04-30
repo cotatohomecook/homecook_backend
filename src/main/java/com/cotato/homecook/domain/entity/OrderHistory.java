@@ -15,10 +15,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class OrderHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Long orderHistoryId;
 
     // 가게랑 many to one
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,11 +31,11 @@ public class Order {
     private Customer customer;
 
     // 주문 수량이랑 one to many
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderHistory", cascade = CascadeType.ALL)
     List<OrderQuantity> orderQuantities = new ArrayList<>();
 
     // 리뷰랑 one to one
-    @OneToOne(mappedBy = "order")
+    @OneToOne(mappedBy = "orderHistory")
     private Review review;
 
     private Date orderedAt;

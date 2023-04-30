@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,7 +30,7 @@ public class Shop {
 
     // 주문이랑 one to many
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
-    List<Order> orders = new ArrayList<>();
+    List<OrderHistory> orderHistories = new ArrayList<>();
 
     private String shopName;
     private String imageUrl;

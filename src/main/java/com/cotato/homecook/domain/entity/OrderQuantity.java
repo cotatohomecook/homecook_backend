@@ -19,8 +19,8 @@ public class OrderQuantity {
 
     // 주문 내역이랑 many to one
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "order_history_id", nullable = false)
+    private OrderHistory orderHistory;
 
     // 메뉴랑 many to one
     @ManyToOne(fetch = FetchType.LAZY)

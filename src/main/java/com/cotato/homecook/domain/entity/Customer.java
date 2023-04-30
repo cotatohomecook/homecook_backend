@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,7 +29,7 @@ public class Customer {
 
     // 주문 내역이랑 one to many
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    List<Order> orders  = new ArrayList<>();
+    List<OrderHistory> orderHistories = new ArrayList<>();
 
     private String customerName;
     private String email;
