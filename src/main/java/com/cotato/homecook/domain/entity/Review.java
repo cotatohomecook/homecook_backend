@@ -1,11 +1,14 @@
 package com.cotato.homecook.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -28,8 +31,11 @@ public class Review {
     @JoinColumn(name = "order_history_id", nullable = false)
     private OrderHistory orderHistory;
     private String content;
-    private Long rate;
-    private Date uploaded_at;
-    private String image_url;
+    private double rating;
+
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
+    @CreationTimestamp
+    private LocalDateTime uploaded_at;
+    private String imageUrl;
 
 }

@@ -31,6 +31,8 @@ public class Menu {
     // 재료량 one to many
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     List<Ingrediant> ingrediants  = new ArrayList<>();
+
+    private String menuName;
     private String imageUrl;
     private Long price;
     private String description;

@@ -1,11 +1,14 @@
 package com.cotato.homecook.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +41,9 @@ public class OrderHistory {
     @OneToOne(mappedBy = "orderHistory")
     private Review review;
 
-    private Date orderedAt;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
+    @CreationTimestamp
+    private LocalDateTime orderedAt;
     private Boolean isCompleted;
     private Boolean isDeleted;
 }

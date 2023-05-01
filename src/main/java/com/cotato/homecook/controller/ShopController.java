@@ -19,16 +19,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ShopController {
     private final S3Uploader s3Uploader;
-    private final SellerRepository sellerRepository;
     private final ShopRepository shopRepository;
-    @GetMapping("/")
-    public String test() {
-        Optional<Seller> seller = sellerRepository.findById(1L);
-        String s = seller.get().getShop().getShopName().toString();
-        System.out.println("s = " + s);
-        shopRepository.deleteById(2L);
-        return "test";
-    }
+//    @GetMapping("/")
+//    public String test() {
+//        Optional<Seller> seller = sellerRepository.findById(1L);
+//        String s = seller.get().getShop().getShopName().toString();
+//        System.out.println("s = " + s);
+//        shopRepository.deleteById(2L);
+//        return "test";
+//    }
+
 
     @PostMapping("/image")
     public String updateUserImage(@RequestParam("images") MultipartFile multipartFile) {

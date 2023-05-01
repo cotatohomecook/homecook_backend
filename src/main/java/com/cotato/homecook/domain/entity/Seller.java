@@ -18,7 +18,7 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sellerId;
 
-    @OneToOne(mappedBy = "seller")
+    @OneToOne(mappedBy = "seller", cascade = CascadeType.ALL)
     private Shop shop;
     private String sellerName;
     private String email;
