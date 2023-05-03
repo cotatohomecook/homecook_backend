@@ -1,5 +1,6 @@
 package com.cotato.homecook.repository;
 
+import com.cotato.homecook.domain.dto.shop.ShopMapResponseInterface;
 import com.cotato.homecook.domain.dto.shop.ShopRandomResponseInterface;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponseInterface;
 import com.cotato.homecook.domain.entity.Shop;
@@ -32,4 +33,11 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "LIMIT 10"
             , nativeQuery = true)
     List<ShopRandomResponseInterface> findRadndom10Shops(double userLatitude, double userLongitude);
+
+    @Query(value = "SELECT * " +
+            "FROM shop s " +
+            "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 "
+            , nativeQuery = true)
+    List<Shop> findAllNearShops(double userLatitude, double userLongitude);
+
 }

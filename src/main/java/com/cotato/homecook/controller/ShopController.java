@@ -1,6 +1,7 @@
 package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
+import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRandomResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
 import com.cotato.homecook.domain.entity.Menu;
@@ -19,7 +20,6 @@ import java.util.List;
 public class ShopController {
     private final S3Uploader s3Uploader;
     private final ShopService shopService;
-    private final MenuRepository menuRepository;
 //    @GetMapping("/test/{num}")
 //    public String test (@PathVariable("num") long num) {
 //        List<Object[]> list = menuRepository.findAllByOrderCountByShopId(num);
@@ -40,6 +40,10 @@ public class ShopController {
         return ApiResponse.createSuccess(shopService.getRandom10Shops(latitude, longitude));
     }
 
+    @GetMapping("/map")
+    public ApiResponse<List<ShopMapResponse>> getAllShops(@RequestParam double latitude, @RequestParam double longitude) {
+        return ApiResponse.createSuccess(shopService.getAllNearShops(latitude, longitude));
+    }
     @PostMapping("/image")
     public String updateUserImage(@RequestParam("images") MultipartFile multipartFile) {
         try {
