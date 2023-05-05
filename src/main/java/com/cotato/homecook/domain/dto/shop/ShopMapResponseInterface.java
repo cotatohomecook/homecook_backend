@@ -10,4 +10,5 @@ public interface ShopMapResponseInterface {
     double getLatitude();
     double getLongitude();
     double getRating();
+    long getReviewCount();
 }
