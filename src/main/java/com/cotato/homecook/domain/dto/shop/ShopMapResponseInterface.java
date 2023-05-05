@@ -1,11 +1,12 @@
 package com.cotato.homecook.domain.dto.shop;
 
-import java.util.function.DoubleBinaryOperator;
+import javax.persistence.Column;
 
 public interface ShopMapResponseInterface {
-    long getShopId();
-    String getShopName();
-    String getImageUrl();
+    long getShop_Id();
+
+    String getShop_Name();
+    String getImage_Url();
     double getLatitude();
     double getLongitude();
     double getRating();

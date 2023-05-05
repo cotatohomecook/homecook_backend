@@ -1,26 +1,26 @@
 package com.cotato.homecook.domain.dto.shop;
 
 import com.cotato.homecook.domain.entity.Shop;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
+@AllArgsConstructor
 public class ShopMapResponse {
-    private long shopId;
-    private String shopName;
-    private String imageUrl;
-    private double latitude;
-    private double longitude;
-    private double rating;
-    public static ShopMapResponse toDto(Shop shop, double rating){
-        return ShopMapResponse.builder()
-                .shopId(shop.getShopId())
-                .shopName(shop.getShopName())
-                .imageUrl(shop.getImageUrl())
-                .latitude(shop.getLatitude())
-                .longitude(shop.getLongitude())
-                .rating(rating)
-                .build();
+    Long shopId;
+    String shopName;
+    String imageUrl;
+    double latitude;
+    double longitude;
+    double rating;
+
+    public ShopMapResponse(ShopMapResponseInterface shopMapResponseInterface) {
+        this.shopId = shopMapResponseInterface.getShop_Id();
+        this.shopName = shopMapResponseInterface.getShop_Name();
+        this.imageUrl = shopMapResponseInterface.getImage_Url();
+        this.latitude = shopMapResponseInterface.getLatitude();
+        this.longitude = shopMapResponseInterface.getLongitude();
+        this.rating = shopMapResponseInterface.getRating();
     }
 }
