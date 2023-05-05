@@ -13,15 +13,15 @@ import java.util.List;
 @RequestMapping("/api/bookmarks")
 public class BookmarkController {
 
-    private static BookmarkService bookMarkService;
+    private final BookmarkService bookmarkService;
 
-    @PostMapping("/{shopId}")
-    public ApiResponse<BookmarkResponse> bookmarkShop(@PathVariable Long shopId){
-        return ApiResponse.createSuccess(bookMarkService.bookmarkShop(shopId));
+    @PostMapping("/{shopId}/{folderName}")
+    public ApiResponse<?> bookmarkShop(@PathVariable Long shopId, @PathVariable String folderName){
+        return ApiResponse.createSuccessWithNoData(bookmarkService.bookmarkShop(shopId, folderName));
     }
 
     @GetMapping
     public ApiResponse<List<BookmarkResponse>> getBookmarks(){
-        return ApiResponse.createSuccess(bookMarkService.getBookmarks());
+        return ApiResponse.createSuccess(bookmarkService.getBookmarks());
     }
 }
