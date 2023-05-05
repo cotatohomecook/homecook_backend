@@ -36,5 +36,7 @@ public class Shop {
     private String imageUrl;
     private double latitude;
     private double longitude;
+    private String category;
+
 
 }

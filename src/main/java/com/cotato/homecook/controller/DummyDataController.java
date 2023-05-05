@@ -41,6 +41,7 @@ public class DummyDataController {
                     .shopName(dummyDataGenerator.generateShopName())
                     .longitude(dummyDataGenerator.generateCoordinate("longitude"))
                     .latitude(dummyDataGenerator.generateCoordinate("latitude"))
+                    .category(dummyDataGenerator.generateCategory())
                     .imageUrl("https://homecook-bucket.s3.ap-northeast-2.amazonaws.com/static/b7f977bc-843e-4a82-8b3e-332e7ef5aefcpngfind.com-mysql-logo-transparent-png-744402.png")
                     .seller(seller)
                     .build();
@@ -56,7 +57,6 @@ public class DummyDataController {
         for (Shop shop : shopList) {
             for (int i = 0; i < 2; i++) {
                 Menu menu = Menu.builder()
-                        .category(dummyDataGenerator.generateCategory())
                         .price(dummyDataGenerator.generateRandomPrice())
                         .menuName(dummyDataGenerator.generateRandomString("메뉴"))
                         .description(dummyDataGenerator.generateRandomString("메뉴설명"))
@@ -142,6 +142,7 @@ public class DummyDataController {
                         .content(dummyDataGenerator.generateRandomString("리뷰 내용"))
                         .customer(orderHistory.getCustomer())
                         .orderHistory(orderHistory)
+                        .is_deleted(dummyDataGenerator.generateRandomNumber(0,1) == 0 ? false : true)
                         .rating(dummyDataGenerator.generateRandomNumber(1, 10) * 0.5)
                         .imageUrl("https://homecook-bucket.s3.ap-northeast-2.amazonaws.com/static/%EB%A6%AC%EB%B7%B0+%EC%82%AC%EC%A7%84.png")
                         .build();

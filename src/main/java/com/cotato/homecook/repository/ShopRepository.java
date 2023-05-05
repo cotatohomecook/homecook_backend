@@ -18,8 +18,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "COUNT(o.order_history_id) AS orderCount," +
             "ROW_NUMBER() OVER (ORDER BY COUNT(o.order_history_id) DESC) AS ranking " +
             "FROM shop s JOIN order_history o ON s.shop_id = o.shop_id " +
-            "WHERE o.is_completed = true AND " +
-            "ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 " +
+            "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 " +
             "GROUP BY s.shop_id " +
             "ORDER BY orderCount DESC LIMIT 10", nativeQuery = true)
     List<ShopRankResponseInterface> findTop10ShopsByOrderCount(double userLatitude, double userLongitude);
@@ -34,18 +33,13 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             , nativeQuery = true)
     List<ShopRandomResponseInterface> findRadndom10Shops(double userLatitude, double userLongitude);
 
-//    @Query(value = "SELECT * " +
-//            "FROM shop s " +
-//            "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 "
-//            , nativeQuery = true)
-//    List<Shop> findAllNearShops(double userLatitude, double userLongitude);
     @Query(value = "SELECT *, " +
-            "(SELECT AVG(r.rating) FROM review r " +
-            " INNER JOIN order_history oh ON r.order_history_id = oh.order_history_id " +
-            " WHERE oh.shop_id = s.shop_id AND r.is_deleted = false) as rating " +
+            "COALESCE((SELECT AVG(r.rating) FROM review r " +
+            "INNER JOIN order_history oh ON r.order_history_id = oh.order_history_id " +
+            "WHERE oh.shop_id = s.shop_id), 0) as rating " +
             "FROM shop s " +
             "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 "
             , nativeQuery = true)
-    List<Shop> findAllNearShops(double userLatitude, double userLongitude);
+    List<ShopMapResponseInterface> findAllNearShops(double userLatitude, double userLongitude);
 
 }

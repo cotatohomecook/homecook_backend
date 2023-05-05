@@ -3,11 +3,8 @@ package com.cotato.homecook.service;
 import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRandomResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
-import com.cotato.homecook.domain.entity.OrderHistory;
-import com.cotato.homecook.domain.entity.Shop;
 import com.cotato.homecook.repository.MenuRepository;
 import com.cotato.homecook.repository.OrderHistoryRepository;
-import com.cotato.homecook.repository.ReviewRepository;
 import com.cotato.homecook.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -34,10 +31,8 @@ public class ShopService {
         return shopRepository.findRadndom10Shops(latitude, longitude)
                 .stream()
                 .map(s -> {
-                    ShopRandomResponse shopRandomResponse = new ShopRandomResponse(s);
-                    String bestMenuName = menuRepository.findMostPopularMenuNameByShopId(s.getShopId(), PageRequest.of(0, 1)).get(0);
-                    shopRandomResponse.setBestMenuName(bestMenuName);
-                    return shopRandomResponse;
+                    String bestMenuName = menuRepository.findBestMenuNameByShopId(s.getShopId()).get(0);
+                    return new ShopRandomResponse(s,bestMenuName);
                 })
                 .collect(Collectors.toList());
     }
@@ -45,15 +40,8 @@ public class ShopService {
     public List<ShopMapResponse> getAllNearShops(double latitude, double longitude) {
         return shopRepository.findAllNearShops(latitude, longitude)
                 .stream()
-                .map(s -> ShopMapResponse.toDto(s, getRatingOfShop(s)))
+                .map(ShopMapResponse::new)
                 .collect(Collectors.toList());
     }
 
-    private double getRatingOfShop(Shop shop) {
-        return Double.parseDouble(String.format("%.1f", orderHistoryRepository.findAllByShopAndReviewIsNotNull(shop)
-                .stream()
-                .mapToDouble(o -> o.getReview().getRating())
-                .average()
-                .orElse(0)));
-    }
 }
