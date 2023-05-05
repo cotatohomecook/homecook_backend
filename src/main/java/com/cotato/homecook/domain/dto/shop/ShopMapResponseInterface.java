@@ -8,4 +8,5 @@ public interface ShopMapResponseInterface {
     String getImageUrl();
     double getLatitude();
     double getLongitude();
+    double getRating();
 }

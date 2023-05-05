@@ -34,7 +34,15 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             , nativeQuery = true)
     List<ShopRandomResponseInterface> findRadndom10Shops(double userLatitude, double userLongitude);
 
-    @Query(value = "SELECT * " +
+//    @Query(value = "SELECT * " +
+//            "FROM shop s " +
+//            "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 "
+//            , nativeQuery = true)
+//    List<Shop> findAllNearShops(double userLatitude, double userLongitude);
+    @Query(value = "SELECT *, " +
+            "(SELECT AVG(r.rating) FROM review r " +
+            " INNER JOIN order_history oh ON r.order_history_id = oh.order_history_id " +
+            " WHERE oh.shop_id = s.shop_id AND r.is_deleted = false) as rating " +
             "FROM shop s " +
             "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 "
             , nativeQuery = true)
