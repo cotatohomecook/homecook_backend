@@ -14,6 +14,7 @@ public class ShopMapResponse {
     double latitude;
     double longitude;
     double rating;
+    long reviewCount;
 
     public ShopMapResponse(ShopMapResponseInterface shopMapResponseInterface) {
         this.shopId = shopMapResponseInterface.getShop_Id();
@@ -22,5 +23,6 @@ public class ShopMapResponse {
         this.latitude = shopMapResponseInterface.getLatitude();
         this.longitude = shopMapResponseInterface.getLongitude();
         this.rating = shopMapResponseInterface.getRating();
+        this.reviewCount = shopMapResponseInterface.getReviewCount();
     }
 }

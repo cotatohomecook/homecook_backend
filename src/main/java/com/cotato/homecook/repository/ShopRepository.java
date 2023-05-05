@@ -33,12 +33,14 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             , nativeQuery = true)
     List<ShopRandomResponseInterface> findRadndom10Shops(double userLatitude, double userLongitude);
 
-    @Query(value = "SELECT *, " +
-            "COALESCE((SELECT AVG(r.rating) FROM review r " +
-            "INNER JOIN order_history oh ON r.order_history_id = oh.order_history_id " +
-            "WHERE oh.shop_id = s.shop_id), 0) as rating " +
-            "FROM shop s " +
-            "WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 "
+    @Query(value = "SELECT s.*," +
+            "            COALESCE(ROUND(AVG(r.rating), 1), 0) as rating, " +
+            "            COALESCE(COUNT(r.review_id), 0) as reviewCount " +
+            "            FROM shop s " +
+            "            LEFT JOIN order_history oh ON oh.shop_id = s.shop_id " +
+            "            LEFT JOIN review r ON r.order_history_id = oh.order_history_id " +
+            "            WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000 " +
+            "            GROUP BY s.shop_id"
             , nativeQuery = true)
     List<ShopMapResponseInterface> findAllNearShops(double userLatitude, double userLongitude);
 
