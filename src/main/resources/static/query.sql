@@ -31,3 +31,11 @@ GROUP BY m.menu_id
 ORDER BY count DESC @Query("SELECT m FROM Menu m " +
             "WHERE m.shop.shopId = :shopId " +
             "ORDER BY (SELECT COUNT(oq) FROM OrderQuantity oq WHERE oq.menu = m) DESC")
+
+
+SELECT *,
+       coalesce((SELECT AVG(r.rating) FROM review r
+                                               INNER JOIN order_history oh ON r.order_history_id = oh.order_history_id
+                 WHERE oh.shop_id = s.shop_id),0) as rating
+FROM shop s
+WHERE ST_Distance_Sphere(point(:userLongitude, :userLatitude), point(s.longitude, s.latitude)) <= 3000
