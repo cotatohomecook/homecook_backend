@@ -37,5 +37,6 @@ public class Review {
     @CreationTimestamp
     private LocalDateTime uploaded_at;
     private String imageUrl;
+    private boolean is_deleted;
 
 }

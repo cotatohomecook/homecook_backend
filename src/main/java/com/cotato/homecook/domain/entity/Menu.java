@@ -36,6 +36,5 @@ public class Menu {
     private String imageUrl;
     private Long price;
     private String description;
-    private String category;
 
 }

@@ -11,10 +11,12 @@ import java.util.List;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    @Query("SELECT m.menuName FROM Menu m " +
-            "LEFT JOIN OrderQuantity oq ON m.menuId = oq.menu.menuId " +
-            "WHERE m.shop.shopId = :shopId " +
-            "GROUP BY m.menuId " +
-            "ORDER BY COUNT(oq.menu.menuId) DESC")
-     List<String> findMostPopularMenuNameByShopId(Long shopId, Pageable pageable);
+    @Query(value = "SELECT m.menu_name FROM menu m " +
+            "LEFT JOIN order_quantity oq ON m.menu_id = oq.menu_id " +
+            "WHERE m.shop_id = :shopId " +
+            "GROUP BY m.menu_id " +
+            "ORDER BY COUNT(oq.menu_id) DESC " +
+            "LIMIT 1"
+            ,nativeQuery = true)
+    List<String> findBestMenuNameByShopId(Long shopId);
 }
