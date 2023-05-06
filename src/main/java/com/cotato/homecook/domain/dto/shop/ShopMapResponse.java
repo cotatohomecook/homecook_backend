@@ -15,14 +15,16 @@ public class ShopMapResponse {
     double longitude;
     double rating;
     long reviewCount;
+    double distance;
 
-    public ShopMapResponse(ShopMapResponseInterface shopMapResponseInterface) {
-        this.shopId = shopMapResponseInterface.getShop_Id();
-        this.shopName = shopMapResponseInterface.getShop_Name();
-        this.imageUrl = shopMapResponseInterface.getImage_Url();
-        this.latitude = shopMapResponseInterface.getLatitude();
-        this.longitude = shopMapResponseInterface.getLongitude();
-        this.rating = shopMapResponseInterface.getRating();
-        this.reviewCount = shopMapResponseInterface.getReviewCount();
+    public ShopMapResponse(ShopDefaultResponseInterface shopDefaultResponseInterface) {
+        this.shopId = shopDefaultResponseInterface.getShop_Id();
+        this.shopName = shopDefaultResponseInterface.getShop_Name();
+        this.imageUrl = shopDefaultResponseInterface.getImage_Url();
+        this.latitude = shopDefaultResponseInterface.getLatitude();
+        this.longitude = shopDefaultResponseInterface.getLongitude();
+        this.rating = shopDefaultResponseInterface.getRating();
+        this.reviewCount = shopDefaultResponseInterface.getReviewCount();
+        this.distance = shopDefaultResponseInterface.getDistance();
     }
 }
