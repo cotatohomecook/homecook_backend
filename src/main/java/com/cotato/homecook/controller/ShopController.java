@@ -20,7 +20,8 @@ import java.util.List;
 public class ShopController {
     private final S3Uploader s3Uploader;
     private final ShopService shopService;
-//    @GetMapping("/test/{num}")
+
+    //    @GetMapping("/test/{num}")
 //    public String test (@PathVariable("num") long num) {
 //        List<Object[]> list = menuRepository.findAllByOrderCountByShopId(num);
 //        for (Object[] objArr : list) {
@@ -31,12 +32,12 @@ public class ShopController {
 //        return "hi";
 //    }
     @GetMapping("/rank")
-    public ApiResponse<List<ShopRankResponse>> getRankTop10(@RequestParam double latitude, @RequestParam double longitude){
+    public ApiResponse<List<ShopRankResponse>> getRankTop10(@RequestParam double latitude, @RequestParam double longitude) {
         return ApiResponse.createSuccess(shopService.getRankTop10(latitude, longitude));
     }
 
     @GetMapping("/random")
-    public ApiResponse<List<ShopBestMenuResponse>> getRandom10Shops(@RequestParam double latitude, @RequestParam double longitude){
+    public ApiResponse<List<ShopBestMenuResponse>> getRandom10Shops(@RequestParam double latitude, @RequestParam double longitude) {
         return ApiResponse.createSuccess(shopService.getRandom10Shops(latitude, longitude));
     }
 
@@ -50,12 +51,20 @@ public class ShopController {
                                                                                 String category, Pageable pageable) {
         return ApiResponse.createSuccess(shopService.getAllByCategoryByOrderCount(latitude, longitude, category, pageable));
     }
+
+    @GetMapping("/search")
+    public ApiResponse<Page<ShopBestMenuResponse>> getSearchResultByShopName(@RequestParam double latitude, @RequestParam double longitude, @RequestParam String shopName, @RequestParam String orderBy, Pageable pageable) {
+        return ApiResponse.createSuccess(shopService.getSearchResultByShopName(latitude, longitude, shopName, orderBy, pageable));
+    }
+
     @PostMapping("/image")
     public String updateUserImage(@RequestParam("images") MultipartFile multipartFile) {
         try {
             s3Uploader.uploadFiles(multipartFile, "static");
 //        } catch (Exception e) { return new ResponseEntity(HttpStatus.BAD_REQUEST); }
-        } catch (Exception e) { return e.getMessage(); }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
         return "success";
     }
 
