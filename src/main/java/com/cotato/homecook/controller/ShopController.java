@@ -1,6 +1,7 @@
 package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
+import com.cotato.homecook.domain.dto.shop.ShopDefaultResponseInterface;
 import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopBestMenuResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
@@ -48,7 +49,7 @@ public class ShopController {
 
     @GetMapping("/list")
     public ApiResponse<Page<ShopBestMenuResponse>> getAllByCategoryByOrderCount(@RequestParam double latitude, @RequestParam double longitude,
-                                                                                String category, Pageable pageable) {
+                                                                                        String category, Pageable pageable) {
         return ApiResponse.createSuccess(shopService.getAllByCategoryByOrderCount(latitude, longitude, category, pageable));
     }
 

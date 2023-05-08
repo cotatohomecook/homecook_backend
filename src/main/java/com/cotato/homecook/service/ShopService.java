@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +44,6 @@ public class ShopService {
                 .collect(Collectors.toList());
     }
 
-
     public Page<ShopBestMenuResponse> getAllByCategoryByOrderCount(double latitude, double longitude, String category, Pageable pageable) {
         List<ShopDefaultResponseInterface> interfaceList = shopRepository.findAllByCategoryByOrderCount(latitude, longitude, category);
         return convertInterfaceListToPage(interfaceList, pageable);
@@ -66,15 +67,22 @@ public class ShopService {
     private Page<ShopBestMenuResponse> convertInterfaceListToPage(List<ShopDefaultResponseInterface> interfaceList, Pageable pageable) {
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), interfaceList.size());
+
+        // 검색 결과가 없거나 totalPage를 넘어가면 빈 리스트 반환
+        if (start >= interfaceList.size()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, interfaceList.size());
+        }
         List<ShopBestMenuResponse> dtoList = interfaceList.subList(start, end)
                 .stream()
                 .map(this::convertInterfaceToDTO)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, pageable, interfaceList.size());
+
     }
 
     private ShopBestMenuResponse convertInterfaceToDTO(ShopDefaultResponseInterface shopDefaultResponseInterface) {
         // 북마크 확인 코드 추가 필요함
+        // get(0)에서 예외 throw 하는 코드 필요
         Menu bestMenu = menuRepository.findBestMenuNameByShopId(shopDefaultResponseInterface.getShop_Id()).get(0);
         return new ShopBestMenuResponse(shopDefaultResponseInterface, bestMenu, false);
     }
