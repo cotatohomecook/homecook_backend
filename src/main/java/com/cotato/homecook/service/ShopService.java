@@ -22,14 +22,16 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
 
+//    public List<ShopRankResponse> getRankTop10(double latitude, double longitude) {
+//        return shopRepository.findTop10ShopsByOrderCount(latitude, longitude)
+//                .stream()
+//                .map(ShopRankResponse::new)
+//                .collect(Collectors.toList());
+//    }
+
     public List<ShopRankResponse> getRankTop10(double latitude, double longitude) {
-        return shopRepository.findTop10ShopsByOrderCount(latitude, longitude)
-                .stream()
-                .map(ShopRankResponse::new)
-                .collect(Collectors.toList());
+        return shopRepository.findTop10ShopsByOrderCount(latitude, longitude);
     }
-
-
     public List<ShopMapResponse> getAllNearShops(double latitude, double longitude) {
         return shopRepository.findAllNearShops(latitude, longitude)
                 .stream()
