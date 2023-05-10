@@ -1,6 +1,7 @@
 package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.shop.*;
+import com.cotato.homecook.domain.entity.Menu;
 import com.cotato.homecook.repository.MenuRepository;
 import com.cotato.homecook.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +55,9 @@ public class ShopService {
                 })
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, pageable, interfaceList.size());
+    }
+
+    public ShopInfoResponse getShopInfo() {
+        return null;
     }
 }

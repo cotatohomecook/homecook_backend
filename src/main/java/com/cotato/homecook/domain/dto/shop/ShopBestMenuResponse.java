@@ -1,5 +1,6 @@
 package com.cotato.homecook.domain.dto.shop;
 
+import com.cotato.homecook.domain.entity.Menu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
