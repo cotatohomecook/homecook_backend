@@ -4,9 +4,11 @@ import com.cotato.homecook.domain.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ShopBestMenuResponse {
     long shopId;
     String shopName;
@@ -19,15 +21,28 @@ public class ShopBestMenuResponse {
     @JsonProperty("isBookmarked")
     boolean isBookmarked;
 
-    public ShopBestMenuResponse(ShopDefaultResponseInterface shopDefaultResponseInterface, Menu menu, boolean isBookmarked) {
-        this.shopId = shopDefaultResponseInterface.getShop_Id();
-        this.shopName = shopDefaultResponseInterface.getShop_Name();
-        this.imageUrl = shopDefaultResponseInterface.getImage_Url();
-        this.reviewCount = shopDefaultResponseInterface.getReviewCount();
-        this.rating = shopDefaultResponseInterface.getRating();
-        this.distance = shopDefaultResponseInterface.getDistance();
-        this.bestMenuName = menu.getMenuName();
-        this.bestMenuPrice = menu.getPrice();
-        this.isBookmarked = isBookmarked;
+
+    public ShopBestMenuResponse(long shopId, String shopName, String imageUrl, double rating, long reviewCount, long distance) {
+        this.shopId = shopId;
+        this.shopName = shopName;
+        this.imageUrl = imageUrl;
+        this.rating = rating;
+        this.reviewCount = reviewCount;
+        this.distance = distance;
+    }
+
+    @Override
+    public String toString() {
+        return "ShopBestMenuResponse{" +
+                "shopId=" + shopId +
+                ", shopName='" + shopName + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", bestMenuName='" + bestMenuName + '\'' +
+                ", bestMenuPrice=" + bestMenuPrice +
+                ", rating=" + rating +
+                ", reviewCount=" + reviewCount +
+                ", distance=" + distance +
+                ", isBookmarked=" + isBookmarked +
+                '}';
     }
 }

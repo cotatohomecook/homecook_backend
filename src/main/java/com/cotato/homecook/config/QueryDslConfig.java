@@ -19,14 +19,4 @@ public class QueryDslConfig {
     public JPAQueryFactory jpaQueryFactory() {
         return new JPAQueryFactory(entityManager);
     }
-
-    @Bean
-    public SQLTemplates mysqlTemplates() {
-        return MySQLTemplates.builder().build();
-    }
-
-    @Bean
-    public JPASQLQuery jpasqlQuery() {
-        return new JPASQLQuery(entityManager, mysqlTemplates());
-    }
 }
