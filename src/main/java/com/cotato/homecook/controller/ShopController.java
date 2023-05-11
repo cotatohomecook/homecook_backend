@@ -60,8 +60,8 @@ public class ShopController {
         return "success";
     }
 
-    @GetMapping("/info/{shopName}")
-    public ApiResponse<ShopInfoResponse> getShopInfo(@PathVariable String shopName){
-        return ApiResponse.createSuccess(shopService.getShopInfo());
+    @GetMapping("/info/{shopId}")
+    public ApiResponse<ShopInfoResponse> getShopInfo(@PathVariable Long shopId){
+        return ApiResponse.createSuccess(shopService.getShopInfo(shopId));
     }
 }
