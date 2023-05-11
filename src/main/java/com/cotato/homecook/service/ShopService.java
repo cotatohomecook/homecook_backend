@@ -22,41 +22,26 @@ public class ShopService {
     private final MenuRepository menuRepository;
 
     public List<ShopRankResponse> getRankTop10(double latitude, double longitude) {
-        return shopRepository.findTop10ShopsByOrderCount(latitude, longitude)
-                .stream()
-                .map(ShopRankResponse::new)
-                .collect(Collectors.toList());
+        return shopRepository.findTop10ShopsByOrderCount(latitude, longitude);
+    }
+
+    public List<ShopMapResponse> getAllNearShops(double latitude, double longitude) {
+        return shopRepository.findAllNearShops(latitude, longitude);
     }
 
     public List<ShopBestMenuResponse> getRandom10Shops(double latitude, double longitude) {
         return shopRepository.findRadndom10Shops(latitude, longitude)
                 .stream()
-                .map(s -> {
-                    Menu bestMenu = menuRepository.findBestMenuNameByShopId(s.getShop_Id()).get(0);
-                    return new ShopBestMenuResponse(s, bestMenu);
-                })
-                .collect(Collectors.toList());
-    }
-
-    public List<ShopMapResponse> getAllNearShops(double latitude, double longitude) {
-        return shopRepository.findAllNearShops(latitude, longitude)
-                .stream()
-                .map(ShopMapResponse::new)
+                .map(this::getBestMenuByShopDto)
                 .collect(Collectors.toList());
     }
 
     public Page<ShopBestMenuResponse> getAllByCategoryByOrderCount(double latitude, double longitude, String category, Pageable pageable) {
-        List<ShopDefaultResponseInterface> interfaceList = shopRepository.findAllByCategoryByOrderCount(latitude, longitude, category);
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), interfaceList.size());
-        List<ShopBestMenuResponse> dtoList = interfaceList.subList(start, end)
-                .stream()
-                .map(s -> {
-                    Menu bestMenu = menuRepository.findBestMenuNameByShopId(s.getShop_Id()).get(0);
-                    return new ShopBestMenuResponse(s, bestMenu);
-                })
-                .collect(Collectors.toList());
-        return new PageImpl<>(dtoList, pageable, interfaceList.size());
+        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllByCategoryByOrderCount(latitude, longitude, category, pageable);
+
+        List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
+                .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
     }
 
     public ShopInfoResponse getShopInfo(Long shopId) {
@@ -64,5 +49,29 @@ public class ShopService {
         List<ShopOrderMenuResponse> menuList = new ArrayList<>();
         shop.getMenus().forEach(menu -> menuList.add(new ShopOrderMenuResponse(menu)));
         return new ShopInfoResponse(shop, menuList);
+    }
+    public Page<ShopBestMenuResponse> getSearchResultByShopName(double latitude, double longitude, String shopName, String orderBy, Pageable pageable) {
+        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllByShopName(latitude, longitude, shopName, orderBy, pageable);
+        List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
+                .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
+    }
+
+    public Page<ShopBestMenuResponse> getSearchResultByMenuName(double latitude, double longitude, String menuName, String orderBy, Pageable pageable) {
+        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllBYMenuName(latitude, longitude, menuName, orderBy, pageable);
+        List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
+                .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
+    }
+
+    private ShopBestMenuResponse getBestMenuByShopDto(ShopBestMenuResponse shopBestMenuResponse) {
+        // 북마크 확인 코드 추가 필요함
+        // get(0)에서 예외 throw 하는 코드 필요
+        Menu bestMenu = menuRepository.findBestMenuNameByShopId(shopBestMenuResponse.getShopId());
+        shopBestMenuResponse.setBestMenuName(bestMenu.getMenuName());
+        shopBestMenuResponse.setBestMenuPrice(bestMenu.getPrice());
+        return shopBestMenuResponse;
     }
 }
