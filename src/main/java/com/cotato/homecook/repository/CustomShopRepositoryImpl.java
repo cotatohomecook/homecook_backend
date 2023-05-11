@@ -106,36 +106,6 @@ public class CustomShopRepositoryImpl implements CustomShopRepository {
         return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
     }
 
-//    @Override
-//    public Page<ShopBestMenuResponse> findAllByShopNameOrderByDistance(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
-//        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
-//                .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
-//                .groupBy(shop.shopId)
-//                .orderBy(Expressions.numberTemplate(Long.class, "distance").asc())
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-//
-//        JPAQuery<Shop> countQuery = getSearchByShopNameCountQuery(userLatitude, userLongitude, shopName);
-//
-//        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
-//    }
-//
-//    @Override
-//    public Page<ShopBestMenuResponse> findAlLBYShopNameOrderByReviewCount(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
-//        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
-//                .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
-//                .groupBy(shop.shopId)
-//                .orderBy(Expressions.numberTemplate(Long.class, "reviewCount").desc())
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-//
-//        JPAQuery<Shop> countQuery = getSearchByShopNameCountQuery(userLatitude, userLongitude, shopName);
-//
-//        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
-//    }
-
     @Override
     public Page<ShopBestMenuResponse> findAlLBYMenuName(double userLatitude, double userLongitude, String menuName, String orderBy, Pageable pageable) {
         List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
