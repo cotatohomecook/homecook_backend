@@ -4,11 +4,9 @@ import com.cotato.homecook.domain.dto.shop.ShopBestMenuResponse;
 import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
 import com.cotato.homecook.domain.entity.Shop;
-import com.cotato.homecook.repository.CustomShopRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -27,7 +25,7 @@ import static com.cotato.homecook.domain.entity.QMenu.menu;
 
 @Repository
 @RequiredArgsConstructor
-public class CustomShopRepositoryImpl implements CustomShopRepository {
+public class ShopCustomRepositoryImpl implements ShopCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -107,7 +105,7 @@ public class CustomShopRepositoryImpl implements CustomShopRepository {
     }
 
     @Override
-    public Page<ShopBestMenuResponse> findAlLBYMenuName(double userLatitude, double userLongitude, String menuName, String orderBy, Pageable pageable) {
+    public Page<ShopBestMenuResponse> findAllBYMenuName(double userLatitude, double userLongitude, String menuName, String orderBy, Pageable pageable) {
         List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
                 .leftJoin(menu).on(menu.shop.shopId.eq(shop.shopId))
                 .where(isIn3KM(userLatitude, userLongitude), containsMenuName(menuName))

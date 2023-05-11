@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +51,7 @@ public class ShopService {
     }
 
     public Page<ShopBestMenuResponse> getSearchResultByMenuName(double latitude, double longitude, String menuName, String orderBy, Pageable pageable) {
-        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAlLBYMenuName(latitude, longitude, menuName, orderBy, pageable);
+        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllBYMenuName(latitude, longitude, menuName, orderBy, pageable);
         List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
                 .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
 
@@ -62,7 +61,7 @@ public class ShopService {
     private ShopBestMenuResponse getBestMenuByShopDto(ShopBestMenuResponse shopBestMenuResponse) {
         // 북마크 확인 코드 추가 필요함
         // get(0)에서 예외 throw 하는 코드 필요
-        Menu bestMenu = menuRepository.findBestMenuNameByShopId(shopBestMenuResponse.getShopId()).get(0);
+        Menu bestMenu = menuRepository.findBestMenuNameByShopId(shopBestMenuResponse.getShopId());
         shopBestMenuResponse.setBestMenuName(bestMenu.getMenuName());
         shopBestMenuResponse.setBestMenuPrice(bestMenu.getPrice());
         return shopBestMenuResponse;
