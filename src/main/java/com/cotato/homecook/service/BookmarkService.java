@@ -44,6 +44,7 @@ public class BookmarkService {
                 .stream()
                 .map(b -> {
                     BookmarkResponse bookmarkResponse = new BookmarkResponse(b);
+                    System.out.println("b.getFolderName() = " + b.getFolderName());
                     return bookmarkResponse;
                 })
                 .collect(Collectors.toList());
