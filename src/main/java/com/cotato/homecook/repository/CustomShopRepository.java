@@ -13,8 +13,11 @@ public interface CustomShopRepository {
     List<ShopRankResponse> findTop10ShopsByOrderCount(double userLatitude, double userLongitude);
     List<ShopBestMenuResponse> findRadndom10Shops(double userLatitude, double userLongitude);
     List<ShopMapResponse> findAllNearShops(double userLatitude, double userLongitude);
-    Page<ShopBestMenuResponse> findAllByCategoryByOrderCount(double latitude, double longitude, String category, Pageable pageable);
+    Page<ShopBestMenuResponse> findAllByCategoryByOrderCount(double userLatitude, double userLongitude, String category, Pageable pageable);
     Page<ShopBestMenuResponse> findAllByShopNameOrderByOrderCount(double userLatitude, double userLongitude, String shopName, Pageable pageable);
     Page<ShopBestMenuResponse> findAllByShopNameOrderByDistance(double userLatitude, double userLongitude, String shopName, Pageable pageable);
     Page<ShopBestMenuResponse> findAlLBYShopNameOrderByReviewCount(double userLatitude, double userLongitude, String shopName, Pageable pageable);
+    Page<ShopBestMenuResponse> findAlLBYMenuNameOrderByOrderCount(double userLatitude, double userLongitude, String menuName, Pageable pageable);
+    Page<ShopBestMenuResponse> findAlLBYMenuNameOrderByDistance(double userLatitude, double userLongitude, String menuName, Pageable pageable);
+    Page<ShopBestMenuResponse> findAlLBYMenuNameOrderByReviewCount(double userLatitude, double userLongitude, String menuName, Pageable pageable);
 }

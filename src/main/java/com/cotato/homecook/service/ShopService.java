@@ -59,6 +59,25 @@ public class ShopService {
         }
         List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
                 .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
+    }
+
+    public Page<ShopBestMenuResponse> getSearchResultByMenuName(double latitude, double longitude, String menuName, String orderBy, Pageable pageable) {
+        Page<ShopBestMenuResponse> shopPageObject = new PageImpl<>(Collections.emptyList());
+        switch (orderBy) {
+            case "orderCount":
+                shopPageObject = shopRepository.findAlLBYMenuNameOrderByOrderCount(latitude, longitude, menuName, pageable);
+                break;
+            case "distance":
+                shopPageObject = shopRepository.findAlLBYMenuNameOrderByDistance(latitude, longitude, menuName, pageable);
+                break;
+            case "reviewCount":
+                shopPageObject = shopRepository.findAlLBYMenuNameOrderByReviewCount(latitude, longitude, menuName, pageable);
+        }
+        List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
+                .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
+
         return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
     }
 

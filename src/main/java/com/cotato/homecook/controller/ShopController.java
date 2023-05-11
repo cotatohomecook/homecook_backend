@@ -49,13 +49,18 @@ public class ShopController {
 
     @GetMapping("/list")
     public ApiResponse<Page<ShopBestMenuResponse>> getAllByCategoryByOrderCount(@RequestParam double latitude, @RequestParam double longitude,
-                                                                                        String category, Pageable pageable) {
+                                                                                String category, Pageable pageable) {
         return ApiResponse.createSuccess(shopService.getAllByCategoryByOrderCount(latitude, longitude, category, pageable));
     }
 
     @GetMapping("/search")
-    public ApiResponse<Page<ShopBestMenuResponse>> getSearchResultByShopName(@RequestParam double latitude, @RequestParam double longitude, @RequestParam String shopName, @RequestParam String orderBy, Pageable pageable) {
-        return ApiResponse.createSuccess(shopService.getSearchResultByShopName(latitude, longitude, shopName, orderBy, pageable));
+    public ApiResponse<Page<ShopBestMenuResponse>> getSearchResultByShopName(@RequestParam double latitude, @RequestParam double longitude,
+                                                                             @RequestParam(required = false) String shopName, @RequestParam(required = false) String menuName, @RequestParam String orderBy, Pageable pageable) {
+        if (shopName != null) {
+            return ApiResponse.createSuccess(shopService.getSearchResultByShopName(latitude, longitude, shopName, orderBy, pageable));
+        } else {
+            return ApiResponse.createSuccess(shopService.getSearchResultByMenuName(latitude, longitude, menuName, orderBy, pageable));
+        }
     }
 
     @PostMapping("/image")
