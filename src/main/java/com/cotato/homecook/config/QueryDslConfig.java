@@ -1,9 +1,6 @@
 package com.cotato.homecook.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.jpa.sql.JPASQLQuery;
-import com.querydsl.sql.MySQLTemplates;
-import com.querydsl.sql.SQLTemplates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

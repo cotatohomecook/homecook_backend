@@ -1,6 +1,5 @@
 package com.cotato.homecook.domain.dto.shop;
 
-import com.cotato.homecook.domain.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

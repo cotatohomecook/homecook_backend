@@ -2,6 +2,7 @@ package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.shop.*;
 import com.cotato.homecook.domain.entity.Menu;
+import com.cotato.homecook.domain.entity.Shop;
 import com.cotato.homecook.repository.MenuRepository;
 import com.cotato.homecook.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,12 @@ public class ShopService {
         return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
     }
 
+    public ShopInfoResponse getShopInfo(Long shopId) {
+        Shop shop = shopRepository.findById(shopId).orElseThrow(RuntimeException::new);
+        List<ShopOrderMenuResponse> menuList = new ArrayList<>();
+        shop.getMenus().forEach(menu -> menuList.add(new ShopOrderMenuResponse(menu)));
+        return new ShopInfoResponse(shop, menuList);
+    }
     public Page<ShopBestMenuResponse> getSearchResultByShopName(double latitude, double longitude, String shopName, String orderBy, Pageable pageable) {
         Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllByShopName(latitude, longitude, shopName, orderBy, pageable);
         List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
@@ -66,5 +74,4 @@ public class ShopService {
         shopBestMenuResponse.setBestMenuPrice(bestMenu.getPrice());
         return shopBestMenuResponse;
     }
-
 }

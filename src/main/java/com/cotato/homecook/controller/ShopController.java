@@ -1,7 +1,7 @@
 package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
-import com.cotato.homecook.domain.dto.shop.ShopDefaultResponseInterface;
+import com.cotato.homecook.domain.dto.shop.ShopInfoResponse;
 import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopBestMenuResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
@@ -74,4 +74,8 @@ public class ShopController {
         return "success";
     }
 
+    @GetMapping("/info/{shopId}")
+    public ApiResponse<ShopInfoResponse> getShopInfo(@PathVariable Long shopId){
+        return ApiResponse.createSuccess(shopService.getShopInfo(shopId));
+    }
 }
