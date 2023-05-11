@@ -10,10 +10,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,17 +44,7 @@ public class ShopService {
     }
 
     public Page<ShopBestMenuResponse> getSearchResultByShopName(double latitude, double longitude, String shopName, String orderBy, Pageable pageable) {
-        Page<ShopBestMenuResponse> shopPageObject = new PageImpl<>(Collections.emptyList());
-        switch (orderBy) {
-            case "orderCount":
-                shopPageObject = shopRepository.findAllByShopNameOrderByOrderCount(latitude, longitude, shopName, pageable);
-                break;
-            case "distance":
-                shopPageObject = shopRepository.findAllByShopNameOrderByDistance(latitude, longitude, shopName, pageable);
-                break;
-            case "reviewCount":
-                shopPageObject = shopRepository.findAlLBYShopNameOrderByReviewCount(latitude, longitude, shopName, pageable);
-        }
+        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllByShopName(latitude, longitude, shopName, orderBy, pageable);
         List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
                 .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
 
@@ -64,17 +52,7 @@ public class ShopService {
     }
 
     public Page<ShopBestMenuResponse> getSearchResultByMenuName(double latitude, double longitude, String menuName, String orderBy, Pageable pageable) {
-        Page<ShopBestMenuResponse> shopPageObject = new PageImpl<>(Collections.emptyList());
-        switch (orderBy) {
-            case "orderCount":
-                shopPageObject = shopRepository.findAlLBYMenuNameOrderByOrderCount(latitude, longitude, menuName, pageable);
-                break;
-            case "distance":
-                shopPageObject = shopRepository.findAlLBYMenuNameOrderByDistance(latitude, longitude, menuName, pageable);
-                break;
-            case "reviewCount":
-                shopPageObject = shopRepository.findAlLBYMenuNameOrderByReviewCount(latitude, longitude, menuName, pageable);
-        }
+        Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAlLBYMenuName(latitude, longitude, menuName, orderBy, pageable);
         List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
                 .stream().map(this::getBestMenuByShopDto).collect(Collectors.toList());
 

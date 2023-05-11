@@ -5,8 +5,10 @@ import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
 import com.cotato.homecook.domain.entity.Shop;
 import com.cotato.homecook.repository.CustomShopRepository;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -90,11 +92,11 @@ public class CustomShopRepositoryImpl implements CustomShopRepository {
     }
 
     @Override
-    public Page<ShopBestMenuResponse> findAllByShopNameOrderByOrderCount(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
+    public Page<ShopBestMenuResponse> findAllByShopName(double userLatitude, double userLongitude, String shopName, String orderBy, Pageable pageable) {
         List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
                 .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
                 .groupBy(shop.shopId)
-                .orderBy(orderHistory.count().desc())
+                .orderBy(getOrderByExpression(orderBy))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -104,75 +106,43 @@ public class CustomShopRepositoryImpl implements CustomShopRepository {
         return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
     }
 
-    @Override
-    public Page<ShopBestMenuResponse> findAllByShopNameOrderByDistance(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
-        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
-                .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
-                .groupBy(shop.shopId)
-                .orderBy(Expressions.numberTemplate(Long.class, "distance").asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Shop> countQuery = getSearchByShopNameCountQuery(userLatitude, userLongitude, shopName);
-
-        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
-    }
-
-    @Override
-    public Page<ShopBestMenuResponse> findAlLBYShopNameOrderByReviewCount(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
-        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
-                .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
-                .groupBy(shop.shopId)
-                .orderBy(Expressions.numberTemplate(Long.class, "reviewCount").desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Shop> countQuery = getSearchByShopNameCountQuery(userLatitude, userLongitude, shopName);
-
-        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
-    }
-
-    @Override
-    public Page<ShopBestMenuResponse> findAlLBYMenuNameOrderByOrderCount(double userLatitude, double userLongitude, String menuName, Pageable pageable) {
-        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
-                .leftJoin(menu).on(menu.shop.shopId.eq(shop.shopId))
-                .where(isIn3KM(userLatitude, userLongitude), containsMenuName(menuName))
-                .groupBy(shop.shopId)
-                .orderBy(orderHistory.count().desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Shop> countQuery = getSearchByMenuNameCountQuery(userLatitude, userLongitude, menuName);
-
-        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
-    }
+//    @Override
+//    public Page<ShopBestMenuResponse> findAllByShopNameOrderByDistance(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
+//        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
+//                .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
+//                .groupBy(shop.shopId)
+//                .orderBy(Expressions.numberTemplate(Long.class, "distance").asc())
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//
+//        JPAQuery<Shop> countQuery = getSearchByShopNameCountQuery(userLatitude, userLongitude, shopName);
+//
+//        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
+//    }
+//
+//    @Override
+//    public Page<ShopBestMenuResponse> findAlLBYShopNameOrderByReviewCount(double userLatitude, double userLongitude, String shopName, Pageable pageable) {
+//        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
+//                .where(isIn3KM(userLatitude, userLongitude), containsShopName(shopName))
+//                .groupBy(shop.shopId)
+//                .orderBy(Expressions.numberTemplate(Long.class, "reviewCount").desc())
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//
+//        JPAQuery<Shop> countQuery = getSearchByShopNameCountQuery(userLatitude, userLongitude, shopName);
+//
+//        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
+//    }
 
     @Override
-    public Page<ShopBestMenuResponse> findAlLBYMenuNameOrderByDistance(double userLatitude, double userLongitude, String menuName, Pageable pageable) {
+    public Page<ShopBestMenuResponse> findAlLBYMenuName(double userLatitude, double userLongitude, String menuName, String orderBy, Pageable pageable) {
         List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
                 .leftJoin(menu).on(menu.shop.shopId.eq(shop.shopId))
                 .where(isIn3KM(userLatitude, userLongitude), containsMenuName(menuName))
                 .groupBy(shop.shopId)
-                .orderBy(Expressions.numberTemplate(Long.class, "distance").asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Shop> countQuery = getSearchByMenuNameCountQuery(userLatitude, userLongitude, menuName);
-
-        return PageableExecutionUtils.getPage(dtoList, pageable, () -> countQuery.fetch().size());
-    }
-
-    @Override
-    public Page<ShopBestMenuResponse> findAlLBYMenuNameOrderByReviewCount(double userLatitude, double userLongitude, String menuName, Pageable pageable) {
-        List<ShopBestMenuResponse> dtoList = getShopBestMenuReponseQuerySelect2Join(userLatitude, userLongitude)
-                .leftJoin(menu).on(menu.shop.shopId.eq(shop.shopId))
-                .where(isIn3KM(userLatitude, userLongitude), containsMenuName(menuName))
-                .groupBy(shop.shopId)
-                .orderBy(Expressions.numberTemplate(Long.class, "reviewCount").desc())
+                .orderBy(getOrderByExpression(orderBy))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -233,5 +203,17 @@ public class CustomShopRepositoryImpl implements CustomShopRepository {
                 .leftJoin(review).on(review.orderHistory.orderHistoryId.eq(orderHistory.orderHistoryId));
     }
 
+    private OrderSpecifier<Long> getOrderByExpression(String orderBy) {
+        switch (orderBy) {
+            case "orderCount":
+                return orderHistory.count().desc();
+            case "distance":
+                return Expressions.numberTemplate(Long.class, "distance").asc();
+            case "reviewCount":
+                return Expressions.numberTemplate(Long.class, "reviewCount").desc();
+            default:
+                throw new IllegalArgumentException("Invalid orderBy parameter: " + orderBy);
+        }
+    }
 
 }
