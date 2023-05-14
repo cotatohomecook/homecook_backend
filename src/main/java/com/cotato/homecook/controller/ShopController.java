@@ -17,21 +17,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/shops/")
+@RequestMapping("/api/shops")
 public class ShopController {
-    private final S3Uploader s3Uploader;
     private final ShopService shopService;
 
-    //    @GetMapping("/test/{num}")
-//    public String test (@PathVariable("num") long num) {
-//        List<Object[]> list = menuRepository.findAllByOrderCountByShopId(num);
-//        for (Object[] objArr : list) {
-//            Menu menu = (Menu) objArr[0];
-//            Long count = (Long) objArr[1];
-//            System.out.println("Menu name: " + menu.getMenuName() + ", Order count: " + count);
-//        }
-//        return "hi";
-//    }
     @GetMapping("/rank")
     public ApiResponse<List<ShopRankResponse>> getRankTop10(@RequestParam double latitude, @RequestParam double longitude) {
         return ApiResponse.createSuccess(shopService.getRankTop10(latitude, longitude));
@@ -61,17 +50,6 @@ public class ShopController {
         } else {
             return ApiResponse.createSuccess(shopService.getSearchResultByMenuName(latitude, longitude, menuName, orderBy, pageable));
         }
-    }
-
-    @PostMapping("/image")
-    public String updateUserImage(@RequestParam("images") MultipartFile multipartFile) {
-        try {
-            s3Uploader.uploadFiles(multipartFile, "static");
-//        } catch (Exception e) { return new ResponseEntity(HttpStatus.BAD_REQUEST); }
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "success";
     }
 
     @GetMapping("/info/{shopId}")
