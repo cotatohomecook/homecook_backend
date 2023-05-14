@@ -26,6 +26,10 @@ public class Review {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id", nullable = false)
+    private Shop shop;
+
     // 주문 내역이랑 one to one, review가 외래키 저장
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_history_id", nullable = false)
