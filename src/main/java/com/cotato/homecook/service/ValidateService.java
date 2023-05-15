@@ -1,0 +1,25 @@
+package com.cotato.homecook.service;
+
+import com.cotato.homecook.domain.entity.OrderHistory;
+import com.cotato.homecook.exception.AppException;
+import com.cotato.homecook.exception.ErrorCode;
+import com.cotato.homecook.repository.OrderHistoryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class ValidateService {
+    private final OrderHistoryRepository orderHistoryRepository;
+
+    public OrderHistory findOrderHistoryById(Long orderHistoryId) {
+        return orderHistoryRepository.findById(orderHistoryId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_HISTORY_NOT_FOUND));
+    }
+
+    public void checkDuplicateReview(OrderHistory orderHistory) {
+        if (orderHistory.getReview() != null) {
+            throw new AppException(ErrorCode.REVIEW_ALREADY_EXIST);
+        }
+    }
+}

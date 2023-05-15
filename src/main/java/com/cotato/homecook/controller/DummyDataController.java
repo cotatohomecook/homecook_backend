@@ -142,6 +142,7 @@ public class DummyDataController {
                         .content(dummyDataGenerator.generateRandomString("리뷰 내용"))
                         .customer(orderHistory.getCustomer())
                         .orderHistory(orderHistory)
+                        .shop(orderHistory.getShop())
                         .is_deleted(dummyDataGenerator.generateRandomNumber(0,1) == 0 ? false : true)
                         .rating(dummyDataGenerator.generateRandomNumber(1, 10) * 0.5)
                         .imageUrl("https://homecook-bucket.s3.ap-northeast-2.amazonaws.com/static/%EB%A6%AC%EB%B7%B0+%EC%82%AC%EC%A7%84.png")
