@@ -1,6 +1,8 @@
 package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.entity.OrderHistory;
+import com.cotato.homecook.exception.CustomException;
+import com.cotato.homecook.exception.ErrorCode;
 import com.cotato.homecook.repository.OrderHistoryRepository;
 import com.cotato.homecook.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +16,12 @@ public class ValidateService {
 
     public OrderHistory findOrderHistoryById(Long orderHistoryId) {
         return orderHistoryRepository.findById(orderHistoryId)
-                // TODO : 커스텀 예외 클래스 만들기
-                .orElseThrow(() -> new RuntimeException("order history not exist"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_HISTORY_NOT_FOUND));
     }
 
     public void checkDuplicateReview(OrderHistory orderHistory) {
         if (orderHistory.getReview() != null) {
-            throw new IllegalStateException("review already exists");
+            throw new CustomException(ErrorCode.REVIEW_ALREADY_EXIST);
         }
     }
 }

@@ -34,7 +34,6 @@ public class ReviewService {
         }
 
         // 원래는 주문 번호도 dto에 들어있음
-        // TODO : validate service로 분리
         OrderHistory orderHistory = validateService.findOrderHistoryById(reviewDto.getOrderHistoryId());
         validateService.checkDuplicateReview(orderHistory);
         reviewRepository.save(reviewDto.toEntity(orderHistory.getCustomer(), imageUrl, orderHistory, orderHistory.getShop()));
