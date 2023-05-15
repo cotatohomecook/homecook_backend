@@ -6,8 +6,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
-        @ExceptionHandler(CustomException.class)
-        public ApiResponse<?> handleCustomException(CustomException e) {
-            return ApiResponse.createError(e.getErrorCode().getHttpStatus(),e.getErrorCode().getMessage());
+    @ExceptionHandler(AppException.class)
+    public ApiResponse<?> handleCustomException(AppException e) {
+        return ApiResponse.createError(e.getErrorCode().getHttpStatus(), e.getErrorCode().getMessage());
+    }
+
+    @ExceptionHandler(ImageException.class)
+    public ApiResponse<?> handleS3Exception(ImageException e) {
+        return ApiResponse.createError(e.getErrorCode().getHttpStatus(), e.getErrorCode().getMessage());
     }
 }
