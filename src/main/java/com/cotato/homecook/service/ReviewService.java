@@ -11,6 +11,7 @@ import com.cotato.homecook.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -18,24 +19,26 @@ import java.util.Optional;
 public class ReviewService {
     private final S3Uploader s3Uploader;
     private final ReviewRepository reviewRepository;
-    private final CustomerRepository customerRepository;
-    private final OrderHistoryRepository orderHistoryRepository;
-    private final ShopRepository shopRepository;
+    private final ValidateService validateService;
 
     public String saveReview(ReviewWriteRequest reviewDto) {
-        // TODO : 사용자 정보 받아서 적용, 사용자가 주문한 기록에 대해서만 리뷰 작성 가능하게끔 처리
+        // TODO : 사용자 정보 받아서 적용하는 로직, 사용자가 주문한 기록에 대해서만 리뷰 작성 가능하게끔 처리
         // TODO : 예외처리도 깔끔하게
-        String imageUrl;
-        try {
-            imageUrl = s3Uploader.uploadFiles(reviewDto.getReviewImage(), "review");
-        } catch (Exception e) {
-            return e.getMessage();
+        String imageUrl = null;
+        if (reviewDto.getReviewImage() != null) {
+            try {
+                imageUrl = s3Uploader.uploadFiles(reviewDto.getReviewImage(), "review");
+            } catch (IOException e) {
+                return e.getMessage();
+            }
         }
-//        Optional<Customer> customer = customerRepository.findById(32L);
+
         // 원래는 주문 번호도 dto에 들어있음
-//        Optional<OrderHistory> orderHistory = orderHistoryRepository.findById(reviewDto.getOrderHistoryId());
-        Optional<OrderHistory> orderHistory = orderHistoryRepository.findById(3L);
-        reviewRepository.save(reviewDto.toEntity(orderHistory.get().getCustomer(), imageUrl, orderHistory.get(), orderHistory.get().getShop()));
+        // TODO : validate service로 분리
+        OrderHistory orderHistory = validateService.findOrderHistoryById(reviewDto.getOrderHistoryId());
+        validateService.checkDuplicateReview(orderHistory);
+        reviewRepository.save(reviewDto.toEntity(orderHistory.getCustomer(), imageUrl, orderHistory, orderHistory.getShop()));
         return imageUrl;
     }
+
 }
