@@ -1,23 +1,18 @@
 package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.review.ReviewWriteRequest;
-import com.cotato.homecook.domain.entity.Customer;
 import com.cotato.homecook.domain.entity.OrderHistory;
-import com.cotato.homecook.repository.CustomerRepository;
-import com.cotato.homecook.repository.OrderHistoryRepository;
 import com.cotato.homecook.repository.ReviewRepository;
-import com.cotato.homecook.repository.ShopRepository;
-import com.cotato.homecook.utils.S3Uploader;
+import com.cotato.homecook.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
-    private final S3Uploader s3Uploader;
+    private final S3Utils s3Utils;
     private final ReviewRepository reviewRepository;
     private final ValidateService validateService;
 
@@ -27,7 +22,7 @@ public class ReviewService {
         String imageUrl = null;
         if (reviewDto.getReviewImage() != null) {
             try {
-                imageUrl = s3Uploader.uploadFiles(reviewDto.getReviewImage(), "review");
+                imageUrl = s3Utils.uploadFiles(reviewDto.getReviewImage(), "review");
             } catch (IOException e) {
                 return e.getMessage();
             }

@@ -6,12 +6,10 @@ import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopBestMenuResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
 import com.cotato.homecook.service.ShopService;
-import com.cotato.homecook.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
