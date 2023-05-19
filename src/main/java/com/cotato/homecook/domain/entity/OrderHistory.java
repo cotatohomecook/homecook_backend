@@ -41,9 +41,16 @@ public class OrderHistory {
     @OneToOne(mappedBy = "orderHistory")
     private Review review;
 
+    private String deliveryAddress;
+
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
     @CreationTimestamp
     private LocalDateTime orderedAt;
     private Boolean isCompleted;
     private Boolean isDeleted;
+
+    public void setOrderQuantities(List<OrderQuantity> orderQuantities){
+       this.orderQuantities = orderQuantities;
+    }
+
 }
