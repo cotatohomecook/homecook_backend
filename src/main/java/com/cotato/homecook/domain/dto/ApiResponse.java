@@ -28,6 +28,6 @@ public class ApiResponse<T> {
     }
 
     public static ApiResponse<?> createError(HttpStatus httpStatus, String message) {
-        return new ApiResponse<>(ERROR_RESULT, httpStatus, message, ERROR_RESULT);
+        return new ApiResponse<>(ERROR_RESULT, httpStatus, message, null);
     }
 }

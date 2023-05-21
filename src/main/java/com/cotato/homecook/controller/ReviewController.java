@@ -2,6 +2,7 @@ package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
 import com.cotato.homecook.domain.dto.review.ReviewWriteRequest;
+import com.cotato.homecook.domain.dto.review.ReviewWriteResponse;
 import com.cotato.homecook.exception.ImageException;
 import com.cotato.homecook.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/")
-    public ApiResponse<?> writeReview(@ModelAttribute ReviewWriteRequest reviewDto) throws ImageException {
-        reviewService.saveReview(reviewDto);
-        return ApiResponse.createSuccessWithNoData("리뷰 작성 성공");
+    public ApiResponse<ReviewWriteResponse> writeReview(@ModelAttribute ReviewWriteRequest reviewDto) throws ImageException {
+        return ApiResponse.createSuccess(reviewService.saveReview(reviewDto));
     }
 }
