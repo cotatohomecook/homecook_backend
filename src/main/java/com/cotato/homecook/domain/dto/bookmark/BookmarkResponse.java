@@ -1,5 +1,6 @@
 package com.cotato.homecook.domain.dto.bookmark;
 
+import com.cotato.homecook.domain.entity.Bookmark;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,11 +18,11 @@ public class BookmarkResponse {
 
     String folderName;
 
-    public BookmarkResponse(BookmarkResponseInterface bookmarkResponseInterface) {
-        this.bookmarkId = bookmarkResponseInterface.getBookmarkId();
-        this.shopId = bookmarkResponseInterface.getShop().getShopId();
-        this.shopName = bookmarkResponseInterface.getShop().getShopName();
-        this.imageUrl = bookmarkResponseInterface.getShop().getImageUrl();
-        this.folderName = bookmarkResponseInterface.getFolderName();
+    public BookmarkResponse(Bookmark bookmark) {
+        bookmarkId = bookmark.getBookmarkId();
+        shopId = bookmark.getShop().getShopId();
+        shopName = bookmark.getShop().getShopName();
+        imageUrl = bookmark.getShop().getImageUrl();
+        folderName = bookmark.getFolderName();
     }
 }

@@ -6,7 +6,6 @@ import com.cotato.homecook.domain.entity.Customer;
 import com.cotato.homecook.domain.entity.Shop;
 import com.cotato.homecook.repository.BookmarkRepository;
 import com.cotato.homecook.repository.CustomerRepository;
-import com.cotato.homecook.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,15 +18,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookmarkService {
 
+    private final ValidateService validateService;
     private final BookmarkRepository bookmarkRepository;
-    private final ShopRepository shopRepository;
     private final CustomerRepository customerRepository;
 
     @Transactional
     public String bookmarkShop(@PathVariable Long shopId, @PathVariable String folderName) {
         // TODO: Custom Exception으로 설정하기
+        // TODO: 회원가입 구현 후 customer도 validate로 가져오기
         Customer customer = customerRepository.findById(329329L).orElseThrow(RuntimeException::new);
-        Shop shop = shopRepository.findById(shopId).orElseThrow(RuntimeException::new);
+        Shop shop = validateService.validateShop(shopId);
         Bookmark bookmark = Bookmark.builder()
                 .customer(customer)
                 .shop(shop)
@@ -42,10 +42,7 @@ public class BookmarkService {
 //        return bookmarkRepository.findAllById(customer.getid());
         return bookmarkRepository.findByCustomer_CustomerId(329329L)
                 .stream()
-                .map(b -> {
-                    BookmarkResponse bookmarkResponse = new BookmarkResponse(b);
-                    return bookmarkResponse;
-                })
+                .map(BookmarkResponse::new)
                 .collect(Collectors.toList());
     }
 }
