@@ -1,4 +1,4 @@
-package com.cotato.homecook.domain.dto.shop;
+package com.cotato.homecook.domain.dto.ingrediant;
 
 import com.cotato.homecook.domain.entity.Ingrediant;
 import lombok.AllArgsConstructor;

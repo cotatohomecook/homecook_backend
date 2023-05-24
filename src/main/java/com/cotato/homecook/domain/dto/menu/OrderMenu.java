@@ -1,4 +1,4 @@
-package com.cotato.homecook.domain.dto.order;
+package com.cotato.homecook.domain.dto.menu;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
