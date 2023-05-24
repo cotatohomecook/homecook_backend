@@ -1,6 +1,7 @@
 package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.menu.OrderMenu;
+import com.cotato.homecook.domain.dto.order.OrderHistoryResponse;
 import com.cotato.homecook.domain.dto.order.OrderRequest;
 import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.repository.*;
@@ -36,5 +37,9 @@ public class OrderService {
         OrderQuantity orderQuantity = orderMenu.toEntity(orderHistory, menu);
         orderQuantityRepository.save(orderQuantity);
         orderQuantityList.add(orderQuantity);
+    }
+
+    public List<OrderHistoryResponse> getOrderHistories() {
+        return new ArrayList<>();
     }
 }
