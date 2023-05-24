@@ -13,17 +13,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final ValidateService validateService;
     private final CustomerRepository customerRepository;
-    private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final OrderQuantityRepository orderQuantityRepository;
 
     public String makeOrder(OrderRequest orderRequest) {
         // TODO: Custom Exception으로 설정하기
+        // TODO: 회원가입 구현 후 customer도 validate로 가져오기
         Customer customer = customerRepository.findById(329329L).orElseThrow(RuntimeException::new);
-        Shop shop = shopRepository.findById(orderRequest.getShopId()).orElseThrow(RuntimeException::new);
-
+        Shop shop = validateService.validateShop(orderRequest.getShopId());
         OrderHistory tmp = OrderHistory.builder()
                 .shop(shop)
                 .customer(customer)
@@ -47,7 +47,6 @@ public class OrderService {
         orderHistory.setOrderQuantities(orderQuantityList);
         return "Order Complete";
     }
-
 
     private Menu getMenu(Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(RuntimeException::new);
