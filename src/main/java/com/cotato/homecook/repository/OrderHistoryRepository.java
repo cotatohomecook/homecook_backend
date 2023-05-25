@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface OrderHistoryRepository extends JpaRepository<OrderHistory,Long> {
     List<OrderHistory> findAllByShopAndReviewIsNotNull(Shop shop);
+
+    List<OrderHistory> findByCustomer_CustomerId(Long customerId);
 }

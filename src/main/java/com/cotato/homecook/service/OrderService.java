@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +33,19 @@ public class OrderService {
         return "Order Complete";
     }
 
+    // TODO: 북마크 여부 넘겨줘야함
+    // TODO: 리뷰 작성 여부 넘겨줘야함
+    public List<OrderHistoryResponse> getOrderHistories() {
+        return orderHistoryRepository.findByCustomer_CustomerId(329329L)
+                .stream()
+                .map(OrderHistoryResponse::new)
+                .collect(Collectors.toList());
+    }
+
     private void saveOrder(OrderHistory orderHistory, List<OrderQuantity> orderQuantityList, OrderMenu orderMenu) {
         Menu menu = validateService.validateMenu(orderMenu.getMenuId());
         OrderQuantity orderQuantity = orderMenu.toEntity(orderHistory, menu);
         orderQuantityRepository.save(orderQuantity);
         orderQuantityList.add(orderQuantity);
-    }
-
-    public List<OrderHistoryResponse> getOrderHistories() {
-        return new ArrayList<>();
     }
 }

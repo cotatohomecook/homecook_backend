@@ -45,6 +45,7 @@ public class ShopService {
         return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
     }
 
+    // TODO: 북마크 되었는지도 넘겨줘야함
     public ShopInfoResponse getShopInfo(Long shopId) {
         Shop shop = shopRepository.findById(shopId).orElseThrow(RuntimeException::new);
         List<ShopOrderMenuResponse> menuList = new ArrayList<>();
