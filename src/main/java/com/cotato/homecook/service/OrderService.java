@@ -1,6 +1,7 @@
 package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.menu.OrderMenu;
+import com.cotato.homecook.domain.dto.order.OrderHistoryResponse;
 import com.cotato.homecook.domain.dto.order.OrderRequest;
 import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.repository.*;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,15 @@ public class OrderService {
                 orderMenu -> saveOrder(orderHistory, orderQuantityList, orderMenu));
         orderHistory.setOrderQuantities(orderQuantityList);
         return "Order Complete";
+    }
+
+    // TODO: 북마크 여부 넘겨줘야함
+    // TODO: 리뷰 작성 여부 넘겨줘야함
+    public List<OrderHistoryResponse> getOrderHistories() {
+        return orderHistoryRepository.findByCustomer_CustomerId(329329L)
+                .stream()
+                .map(OrderHistoryResponse::new)
+                .collect(Collectors.toList());
     }
 
     private void saveOrder(OrderHistory orderHistory, List<OrderQuantity> orderQuantityList, OrderMenu orderMenu) {
