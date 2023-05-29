@@ -1,5 +1,7 @@
 package com.cotato.homecook.service;
 
+import com.cotato.homecook.domain.dto.review.ReviewPatchRequest;
+import com.cotato.homecook.domain.dto.review.ReviewPatchResponse;
 import com.cotato.homecook.domain.dto.review.ReviewWriteRequest;
 import com.cotato.homecook.domain.dto.review.ReviewWriteResponse;
 import com.cotato.homecook.domain.entity.OrderHistory;
@@ -9,6 +11,7 @@ import com.cotato.homecook.repository.ReviewRepository;
 import com.cotato.homecook.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +35,15 @@ public class ReviewService {
         return ReviewWriteResponse.toDto(savedReview);
     }
 
+    @Transactional
+    public ReviewPatchResponse patchReview(Long reviewId, ReviewPatchRequest patchRequest){
+        Review review = validateService.validateReview(reviewId);
+        review.updateContent(patchRequest.getContent());
+        return ReviewPatchResponse.toDto(review);
+    }
     public ReviewWriteResponse deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
         return ReviewWriteResponse.builder().reviewId(reviewId).build();
     }
+
 }

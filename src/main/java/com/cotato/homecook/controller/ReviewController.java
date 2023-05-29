@@ -1,6 +1,8 @@
 package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
+import com.cotato.homecook.domain.dto.review.ReviewPatchRequest;
+import com.cotato.homecook.domain.dto.review.ReviewPatchResponse;
 import com.cotato.homecook.domain.dto.review.ReviewWriteRequest;
 import com.cotato.homecook.domain.dto.review.ReviewWriteResponse;
 import com.cotato.homecook.exception.ImageException;
@@ -19,10 +21,10 @@ public class ReviewController {
         return ApiResponse.createSuccess(reviewService.saveReview(reviewDto));
     }
 
-//    @PatchMapping("/{reviewId}")
-//    public ApiResponse<ReviewWriteResponse> patchReview(@PathVariable Long reviewId, @RequestBody ReviewPatchRequest patchRequest){
-//        return ApiResponse.createSuccess(reviewService.patchReview(reviewId));
-//    }
+    @PatchMapping("/{reviewId}")
+    public ApiResponse<ReviewPatchResponse> patchReview(@PathVariable Long reviewId, @RequestBody ReviewPatchRequest patchRequest){
+        return ApiResponse.createSuccess(reviewService.patchReview(reviewId, patchRequest));
+    }
 
     @DeleteMapping("/{reviewId}")
     public ApiResponse<ReviewWriteResponse> deleteReview(@PathVariable Long reviewId){
