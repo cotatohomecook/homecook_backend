@@ -18,4 +18,14 @@ public class ReviewController {
     public ApiResponse<ReviewWriteResponse> writeReview(@ModelAttribute ReviewWriteRequest reviewDto) throws ImageException {
         return ApiResponse.createSuccess(reviewService.saveReview(reviewDto));
     }
+
+//    @PatchMapping("/{reviewId}")
+//    public ApiResponse<ReviewWriteResponse> patchReview(@PathVariable Long reviewId, @RequestBody ReviewPatchRequest patchRequest){
+//        return ApiResponse.createSuccess(reviewService.patchReview(reviewId));
+//    }
+
+    @DeleteMapping("/{reviewId}")
+    public ApiResponse<ReviewWriteResponse> deleteReview(@PathVariable Long reviewId){
+        return ApiResponse.createSuccess(reviewService.deleteReview(reviewId));
+    }
 }

@@ -10,8 +10,6 @@ import com.cotato.homecook.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -34,4 +32,8 @@ public class ReviewService {
         return ReviewWriteResponse.toDto(savedReview);
     }
 
+    public ReviewWriteResponse deleteReview(Long reviewId) {
+        reviewRepository.deleteById(reviewId);
+        return ReviewWriteResponse.builder().reviewId(reviewId).build();
+    }
 }
