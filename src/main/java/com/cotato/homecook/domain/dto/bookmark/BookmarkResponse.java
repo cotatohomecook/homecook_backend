@@ -14,6 +14,7 @@ public class BookmarkResponse {
 
     String shopName;
 
+    String bestMenuName;
     String imageUrl;
 
     String folderName;

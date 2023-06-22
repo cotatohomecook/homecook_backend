@@ -22,6 +22,8 @@ public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final CustomerRepository customerRepository;
 
+
+    // 식당 즐겨찾기 설정
     @Transactional
     public String bookmarkShop(@PathVariable Long shopId, @PathVariable String folderName) {
         // TODO: Custom Exception으로 설정하기
@@ -36,13 +38,19 @@ public class BookmarkService {
         return "Bookmark Complete";
     }
 
+    //자신이 즐겨찾기한 상점들의 정보 조회
     public List<BookmarkResponse> getBookmarks() {
+        // TODO: 로그인 구현 후 사용자 정보를 토큰에서 바로 뽑아오도록 설정하기
 //        String email = SecurityUtil.getEmail();
 //        Customer customer = validateCustomer(email);
-//        return bookmarkRepository.findAllById(customer.getid());
         return bookmarkRepository.findByCustomer_CustomerId(329329L)
                 .stream()
                 .map(BookmarkResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    //이미 즐겨찾기 되어있던 상점을 즐겨찾기에서 삭제
+    public String deleteBookmark(Long bookmarkId) {
+        return "즐겨찾기 삭제 완료";
     }
 }
