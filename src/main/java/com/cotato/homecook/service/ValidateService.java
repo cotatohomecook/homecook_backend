@@ -1,15 +1,9 @@
 package com.cotato.homecook.service;
 
-import com.cotato.homecook.domain.entity.Menu;
-import com.cotato.homecook.domain.entity.OrderHistory;
-import com.cotato.homecook.domain.entity.Review;
-import com.cotato.homecook.domain.entity.Shop;
+import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
-import com.cotato.homecook.repository.MenuRepository;
-import com.cotato.homecook.repository.OrderHistoryRepository;
-import com.cotato.homecook.repository.ReviewRepository;
-import com.cotato.homecook.repository.ShopRepository;
+import com.cotato.homecook.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +14,7 @@ public class ValidateService {
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
     private final ReviewRepository reviewRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public OrderHistory findOrderHistoryById(Long orderHistoryId) {
         return orderHistoryRepository.findById(orderHistoryId)
@@ -42,5 +37,8 @@ public class ValidateService {
     }
     public Review validateReview(Long reviewId){
         return reviewRepository.findById(reviewId).orElseThrow(()-> new AppException(ErrorCode.REVIEW_NOT_FOUND));
+    }
+    public Bookmark validateBookmark(Long bookmarkId){
+        return bookmarkRepository.findById(bookmarkId).orElseThrow(()-> new AppException(ErrorCode.BOOKMARK_NOT_FOUND));
     }
 }
