@@ -38,7 +38,7 @@ public class BookmarkService {
         return "Bookmark Complete";
     }
 
-    //자신이 즐겨찾기한 상점들의 정보 조회
+    // 자신이 즐겨찾기한 상점들의 정보 조회
     public List<BookmarkResponse> getBookmarks() {
         // TODO: 로그인 구현 후 사용자 정보를 토큰에서 바로 뽑아오도록 설정하기
 //        String email = SecurityUtil.getEmail();
@@ -49,8 +49,10 @@ public class BookmarkService {
                 .collect(Collectors.toList());
     }
 
-    //이미 즐겨찾기 되어있던 상점을 즐겨찾기에서 삭제
+    // 이미 즐겨찾기 되어있던 상점을 즐겨찾기에서 삭제
     public String deleteBookmark(Long bookmarkId) {
+        Bookmark bookmark = validateService.validateBookmark(bookmarkId);
+        bookmarkRepository.delete(bookmark);
         return "즐겨찾기 삭제 완료";
     }
 }
