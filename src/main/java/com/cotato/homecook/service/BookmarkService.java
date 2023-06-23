@@ -60,11 +60,18 @@ public class BookmarkService {
         return "즐겨찾기 삭제 완료";
     }
 
+    // 즐겨찾기 폴더 전체 삭제
+
+
     private BookmarkResponse getBestMenuByShopDto(BookmarkResponse bookmarkResponse) {
         // 북마크 확인 코드 추가 필요함
         // get(0)에서 예외 throw 하는 코드 필요
         Menu bestMenu = menuRepository.findBestMenuNameByShopId(bookmarkResponse.getShopId());
         bookmarkResponse.setBestMenuName(bestMenu.getMenuName());
         return bookmarkResponse;
+    }
+
+    public String deleteBookmarksByFolderName(String bmFolderName) {
+        return "즐겨찾기 폴더 + " + bmFolderName + " 삭제 완료";
     }
 }

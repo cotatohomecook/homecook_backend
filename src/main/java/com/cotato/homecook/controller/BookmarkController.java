@@ -29,4 +29,9 @@ public class BookmarkController {
     public ApiResponse<?> deleteBookmark(@PathVariable Long bookmarkId){
         return ApiResponse.createSuccessWithNoData(bookmarkService.deleteBookmark(bookmarkId));
     }
+
+    @DeleteMapping("/{bmFolderName}")
+    public ApiResponse<?> deleteBookmarksByFolderName(@PathVariable String bmFolderName){
+        return ApiResponse.createSuccessWithNoData(bookmarkService.deleteBookmarksByFolderName(bmFolderName));
+    }
 }
