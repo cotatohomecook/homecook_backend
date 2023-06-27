@@ -6,5 +6,5 @@ import com.cotato.homecook.domain.entity.OrderHistory;
 import java.util.List;
 
 public interface OrderHistoryCustomRepository {
-    List<OrderHistorySellerResponse> findAllSellerOrderHistoryByShopId(Long shopId);
+    List<OrderHistorySellerResponse> findAllSellerOrderHistoryByShopId(Long shopId, String status);
 }

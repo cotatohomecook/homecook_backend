@@ -29,6 +29,11 @@ public class OrderController {
 
     @GetMapping("/inDelivery/{shopId}")
     public ApiResponse<List<OrderHistorySellerResponse>> getSellerInDelevieryOrders(@PathVariable("shopId") Long shopId){
-        return ApiResponse.createSuccess(orderService.getSellerInDeliveryOrders(shopId));
+        return ApiResponse.createSuccess(orderService.getSellerInDeliveryOrders(shopId, "inDelivery"));
+    }
+
+    @GetMapping("/completed/{shopId}")
+    public ApiResponse<List<OrderHistorySellerResponse>> getSellerCompletedOrders(@PathVariable("shopId") Long shopId){
+        return ApiResponse.createSuccess(orderService.getSellerInDeliveryOrders(shopId, "completed"));
     }
 }

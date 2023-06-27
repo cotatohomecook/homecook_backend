@@ -43,9 +43,10 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderHistorySellerResponse> getSellerInDeliveryOrders(Long shopId) {
-        return orderHistoryRepository.findAllSellerOrderHistoryByShopId(shopId);
+    public List<OrderHistorySellerResponse> getSellerInDeliveryOrders(Long shopId, String status) {
+        return orderHistoryRepository.findAllSellerOrderHistoryByShopId(shopId, status);
     }
+
     private void saveOrder(OrderHistory orderHistory, List<OrderQuantity> orderQuantityList, OrderMenu orderMenu) {
         Menu menu = validateService.validateMenu(orderMenu.getMenuId());
         OrderQuantity orderQuantity = orderMenu.toEntity(orderHistory, menu);
