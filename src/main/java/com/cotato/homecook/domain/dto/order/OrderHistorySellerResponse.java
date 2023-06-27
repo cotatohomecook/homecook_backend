@@ -1,11 +1,10 @@
 package com.cotato.homecook.domain.dto.order;
 
-import com.cotato.homecook.domain.entity.Menu;
-import com.cotato.homecook.domain.entity.OrderQuantity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,4 +13,6 @@ public class OrderHistorySellerResponse {
     Long menuCount;
     String representativeMenuName;
     double rating;
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
+    LocalDateTime orderedAt;
 }
