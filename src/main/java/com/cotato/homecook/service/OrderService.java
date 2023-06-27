@@ -44,7 +44,8 @@ public class OrderService {
     }
 
     public List<OrderHistorySellerResponse> getSellerInDeliveryOrders(Long shopId, String status) {
-        return orderHistoryRepository.findAllSellerOrderHistoryByShopId(shopId, status);
+        Shop shop = validateService.validateShop(shopId);
+        return orderHistoryRepository.findAllSellerOrderHistoryByShopId(shop, status);
     }
 
     private void saveOrder(OrderHistory orderHistory, List<OrderQuantity> orderQuantityList, OrderMenu orderMenu) {
