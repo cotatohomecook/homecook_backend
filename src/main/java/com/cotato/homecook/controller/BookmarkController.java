@@ -25,8 +25,18 @@ public class BookmarkController {
         return ApiResponse.createSuccess(bookmarkService.getBookmarks());
     }
 
+//    @GetMapping("/")
+//    public ApiResponse<List<BookmarkFolderNameResponse>> getFolderNames(){
+//        return ApiResponse.createSuccess(bookmarkService.getFolderNames());
+//    }
+
     @DeleteMapping("/{bookmarkId}")
     public ApiResponse<?> deleteBookmark(@PathVariable Long bookmarkId){
         return ApiResponse.createSuccessWithNoData(bookmarkService.deleteBookmark(bookmarkId));
+    }
+
+    @DeleteMapping("/folder/{bmFolderName}")
+    public ApiResponse<?> deleteBookmarksByFolderName(@PathVariable String bmFolderName){
+        return ApiResponse.createSuccessWithNoData(bookmarkService.deleteBookmarksByFolderName(bmFolderName));
     }
 }

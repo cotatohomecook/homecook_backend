@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark,Long> {
     List<Bookmark> findByCustomer_CustomerId(Long customerId);
+    void deleteByFolderName(String bmFolderName);
 }
