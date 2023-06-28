@@ -1,5 +1,6 @@
 package com.cotato.homecook.service;
 
+import com.cotato.homecook.domain.dto.bookmark.BookmarkFolderNameResponse;
 import com.cotato.homecook.domain.dto.bookmark.BookmarkResponse;
 import com.cotato.homecook.domain.entity.Bookmark;
 import com.cotato.homecook.domain.entity.Customer;
@@ -50,6 +51,12 @@ public class BookmarkService {
                 .stream()
                 .map(BookmarkResponse::new)
                 .map(this::getBestMenuByShopDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<BookmarkFolderNameResponse> getFolderNames() {
+        return bookmarkRepository.findDistinctFolderNames().stream()
+                .map(BookmarkFolderNameResponse::new)
                 .collect(Collectors.toList());
     }
 

@@ -1,6 +1,7 @@
 package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
+import com.cotato.homecook.domain.dto.bookmark.BookmarkFolderNameResponse;
 import com.cotato.homecook.domain.dto.bookmark.BookmarkResponse;
 import com.cotato.homecook.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,10 @@ public class BookmarkController {
         return ApiResponse.createSuccess(bookmarkService.getBookmarks());
     }
 
-//    @GetMapping("/")
-//    public ApiResponse<List<BookmarkFolderNameResponse>> getFolderNames(){
-//        return ApiResponse.createSuccess(bookmarkService.getFolderNames());
-//    }
+    @GetMapping("/folder")
+    public ApiResponse<List<BookmarkFolderNameResponse>> getFolderNames(){
+        return ApiResponse.createSuccess(bookmarkService.getFolderNames());
+    }
 
     @DeleteMapping("/{bookmarkId}")
     public ApiResponse<?> deleteBookmark(@PathVariable Long bookmarkId){

@@ -2,6 +2,7 @@ package com.cotato.homecook.repository;
 
 import com.cotato.homecook.domain.entity.Bookmark;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,4 +11,6 @@ import java.util.List;
 public interface BookmarkRepository extends JpaRepository<Bookmark,Long> {
     List<Bookmark> findByCustomer_CustomerId(Long customerId);
     void deleteByFolderName(String bmFolderName);
+    @Query("SELECT DISTINCT b.folderName FROM Bookmark b ORDER BY b.folderName ASC")
+    List<String> findDistinctFolderNames();
 }
