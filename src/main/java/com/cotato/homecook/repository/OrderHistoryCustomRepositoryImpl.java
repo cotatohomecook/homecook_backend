@@ -6,8 +6,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.criterion.SubqueryExpression;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,28 +24,31 @@ import static com.cotato.homecook.domain.entity.QReview.review;
 public class OrderHistoryCustomRepositoryImpl implements OrderHistoryCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
+    JPQLQuery menuCountSubquery = JPAExpressions
+            .select(orderQuantity.menu.countDistinct())
+            .from(orderQuantity)
+            .where(orderQuantity.orderHistory.eq(orderHistory));
+    JPQLQuery maxPriceSubQuery = JPAExpressions
+            .select(menu.price.max())
+            .from(orderQuantity)
+            .leftJoin(orderQuantity.menu, menu)
+            .where(orderQuantity.orderHistory.eq(orderHistory));
+
     @Override
     public List<OrderHistorySellerResponse> findAllSellerOrderHistoryByShopId(Shop shop, String status) {
         return jpaQueryFactory
                 .select(Projections.constructor(OrderHistorySellerResponse.class,
                         orderHistory.orderHistoryId,
-                        JPAExpressions
-                                .select(orderQuantity.menu.countDistinct())
-                                .from(orderQuantity)
-                                .where(orderQuantity.orderHistory.eq(orderHistory)),
+                        menuCountSubquery,
                         menu.menuName,
                         Expressions.numberTemplate(Double.class, "COALESCE({0}, 0)", review.rating).as("rating"),
                         orderHistory.orderedAt
                 ))
                 .from(orderHistory)
-                .leftJoin(orderHistory.orderQuantities, orderQuantity)
-                .leftJoin(orderQuantity.menu, menu)
+                .innerJoin(orderHistory.orderQuantities, orderQuantity)
+                .innerJoin(orderQuantity.menu, menu)
                 .leftJoin(orderHistory.review, review)
-                .where(orderHistory.shop.eq(shop), getStatus(status), menu.price.eq(JPAExpressions
-                        .select(menu.price.max())
-                        .from(orderQuantity)
-                        .leftJoin(orderQuantity.menu, menu)
-                        .where(orderQuantity.orderHistory.eq(orderHistory))))
+                .where(orderHistory.shop.eq(shop), getStatus(status), menu.price.eq(maxPriceSubQuery))
                 .orderBy(orderHistory.orderedAt.desc(), menu.price.desc().nullsLast())
                 .groupBy(orderHistory.orderHistoryId)
                 .fetch();
