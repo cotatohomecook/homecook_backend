@@ -24,46 +24,13 @@ public class OrderHistoryCustomRepositoryImpl implements OrderHistoryCustomRepos
 
     @Override
     public List<OrderHistorySellerResponse> findAllSellerOrderHistoryByShopId(Shop shop, String status) {
-//        return jpaQueryFactory
-//                .select(Projections.constructor(OrderHistorySellerResponse.class,
-//                        orderHistory.orderHistoryId,
-//                        menu.count(),
-//                        menu.menuName,
-//                        Expressions.numberTemplate(Double.class, "COALESCE({0}, 0)", review.rating).as("rating"),
-//                        orderHistory.orderedAt
-//                ))
-//                .from(orderHistory)
-//                .leftJoin(orderHistory.orderQuantities, orderQuantity)
-//                .leftJoin(orderQuantity.menu, menu)
-//                .leftJoin(orderHistory.review, review)
-//                .where(orderHistory.shop.eq(shop), getStatus(status))
-//                .orderBy(orderHistory.orderedAt.desc(), menu.price.desc().nullsLast())
-//                .groupBy(orderHistory.orderHistoryId)
-//                .fetch();
-//        return jpaQueryFactory
-//                .select(Projections.constructor(OrderHistorySellerResponse.class,
-//                        orderHistory.orderHistoryId,
-////                        menu.count(),
-//                        menu.menuName,
-//                        Expressions.numberTemplate(Double.class, "COALESCE({0}, 0)", review.rating).as("rating"),
-//                        orderHistory.orderedAt
-//                ))
-//                .from(orderHistory)
-//                .leftJoin(orderHistory.orderQuantities, orderQuantity)
-//                .leftJoin(orderQuantity.menu, menu)
-//                .leftJoin(orderHistory.review, review)
-//                .where(orderHistory.shop.eq(shop), getStatus(status), orderQuantity.menu.price.eq(
-//                        JPAExpressions.select(menu.price.max())
-//                                .from(menu)
-//                                .where(orderQuantity.menu.eq(menu))
-//                ))
-//                .orderBy(orderHistory.orderedAt.desc(), menu.price.desc().nullsLast())
-////                .groupBy(orderHistory.orderHistoryId)
-//                .fetch();
         return jpaQueryFactory
                 .select(Projections.constructor(OrderHistorySellerResponse.class,
                         orderHistory.orderHistoryId,
-//                        orderQuantity.menu.count(),
+                        JPAExpressions
+                                .select(orderQuantity.menu.countDistinct())
+                                .from(orderQuantity)
+                                .where(orderQuantity.orderHistory.eq(orderHistory)),
                         menu.menuName,
                         Expressions.numberTemplate(Double.class, "COALESCE({0}, 0)", review.rating).as("rating"),
                         orderHistory.orderedAt
@@ -81,6 +48,7 @@ public class OrderHistoryCustomRepositoryImpl implements OrderHistoryCustomRepos
                 .groupBy(orderHistory.orderHistoryId)
                 .fetch();
     }
+
 
     private BooleanExpression getStatus(String status) {
         if (status.equals("completed"))
