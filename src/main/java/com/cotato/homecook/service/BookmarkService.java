@@ -54,6 +54,7 @@ public class BookmarkService {
     }
 
     // 이미 즐겨찾기 되어있던 상점을 즐겨찾기에서 삭제
+    @Transactional
     public String deleteBookmark(Long bookmarkId) {
         Bookmark bookmark = validateService.validateBookmark(bookmarkId);
         bookmarkRepository.delete(bookmark);
@@ -61,7 +62,11 @@ public class BookmarkService {
     }
 
     // 즐겨찾기 폴더 전체 삭제
-
+    @Transactional
+    public String deleteBookmarksByFolderName(String bmFolderName) {
+        bookmarkRepository.deleteByFolderName(bmFolderName);
+        return bmFolderName + " 즐겨찾기 폴더 삭제 완료";
+    }
 
     private BookmarkResponse getBestMenuByShopDto(BookmarkResponse bookmarkResponse) {
         // 북마크 확인 코드 추가 필요함
@@ -69,9 +74,5 @@ public class BookmarkService {
         Menu bestMenu = menuRepository.findBestMenuNameByShopId(bookmarkResponse.getShopId());
         bookmarkResponse.setBestMenuName(bestMenu.getMenuName());
         return bookmarkResponse;
-    }
-
-    public String deleteBookmarksByFolderName(String bmFolderName) {
-        return "즐겨찾기 폴더 + " + bmFolderName + " 삭제 완료";
     }
 }
