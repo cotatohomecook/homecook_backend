@@ -1,5 +1,6 @@
 package com.cotato.homecook.service;
 
+import com.cotato.homecook.domain.dto.menu.ShopDailyBestMenuResponse;
 import com.cotato.homecook.domain.dto.menu.ShopOrderMenuResponse;
 import com.cotato.homecook.domain.dto.shop.*;
 import com.cotato.homecook.domain.entity.Menu;
@@ -75,5 +76,9 @@ public class ShopService {
         shopBestMenuResponse.setBestMenuName(bestMenu.getMenuName());
         shopBestMenuResponse.setBestMenuPrice(bestMenu.getPrice());
         return shopBestMenuResponse;
+    }
+
+    public ShopDailyBestMenuResponse getShopDailyBestMenu(String date) {
+        return null;
     }
 }
