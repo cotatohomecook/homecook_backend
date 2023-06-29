@@ -31,7 +31,9 @@ public class BookmarkService {
     @Transactional
     public String bookmarkShop(@PathVariable Long shopId, @PathVariable String folderName) {
         // TODO: Custom Exception으로 설정하기
-        // TODO: 회원가입 구현 후 customer도 validate로 가져오기
+        // TODO: 로그인 구현 후 사용자 정보를 토큰에서 바로 뽑아오도록 설정하기
+//        String email = SecurityUtil.getEmail();
+//        Customer customer = validateService.validateCustomer(email);
         Customer customer = customerRepository.findById(329329L).orElseThrow(RuntimeException::new);
         Shop shop = validateService.validateShop(shopId);
         Bookmark bookmark = Bookmark.builder()
@@ -46,7 +48,7 @@ public class BookmarkService {
     public List<BookmarkResponse> getBookmarks() {
         // TODO: 로그인 구현 후 사용자 정보를 토큰에서 바로 뽑아오도록 설정하기
 //        String email = SecurityUtil.getEmail();
-//        Customer customer = validateCustomer(email);
+//        Customer customer = validateService.validateCustomer(email);
         return bookmarkRepository.findByCustomer_CustomerId(329329L)
                 .stream()
                 .map(BookmarkResponse::new)
@@ -55,7 +57,10 @@ public class BookmarkService {
     }
 
     public List<BookmarkFolderNameResponse> getFolderNames() {
-        return bookmarkRepository.findDistinctFolderNames().stream()
+        // TODO: 로그인 구현 후 사용자 정보를 토큰에서 바로 뽑아오도록 설정하기
+//        String email = SecurityUtil.getEmail();
+//        Customer customer = validateService.validateCustomer(email);
+        return bookmarkRepository.findDistinctFolderNames(329329L).stream()
                 .map(BookmarkFolderNameResponse::new)
                 .collect(Collectors.toList());
     }
