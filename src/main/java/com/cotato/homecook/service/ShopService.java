@@ -3,10 +3,13 @@ package com.cotato.homecook.service;
 import com.cotato.homecook.domain.dto.menu.ShopDailyBestMenuResponse;
 import com.cotato.homecook.domain.dto.menu.ShopOrderMenuResponse;
 import com.cotato.homecook.domain.dto.shop.*;
+import com.cotato.homecook.domain.entity.Customer;
 import com.cotato.homecook.domain.entity.Menu;
+import com.cotato.homecook.domain.entity.Receipt;
 import com.cotato.homecook.domain.entity.Shop;
-import com.cotato.homecook.repository.MenuRepository;
-import com.cotato.homecook.repository.ShopRepository;
+import com.cotato.homecook.exception.AppException;
+import com.cotato.homecook.exception.ErrorCode;
+import com.cotato.homecook.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +25,9 @@ import java.util.stream.Collectors;
 public class ShopService {
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final CustomerRepository customerRepository;
+    private final ReceiptRepository receiptRepository;
 
     public List<ShopRankResponse> getRankTop10(double latitude, double longitude) {
         return shopRepository.findTop10ShopsByOrderCount(latitude, longitude);
@@ -46,12 +52,17 @@ public class ShopService {
         return new PageImpl<>(dtoList, pageable, shopPageObject.getTotalElements());
     }
 
-    // TODO: 북마크 되었는지도 넘겨줘야함
     public ShopInfoResponse getShopInfo(Long shopId) {
+        // TODO: Custom Exception으로 설정
+        Customer customer = customerRepository.findById(329329L)
+                .orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         Shop shop = shopRepository.findById(shopId).orElseThrow(RuntimeException::new);
         List<ShopOrderMenuResponse> menuList = new ArrayList<>();
         shop.getMenus().forEach(menu -> menuList.add(new ShopOrderMenuResponse(menu)));
-        return new ShopInfoResponse(shop, menuList);
+        boolean isBookmarked = bookmarkRepository.existsByCustomerAndShop(customer, shop);
+        Receipt receipt = receiptRepository.findFirstByShopOrderByUploadedAtDesc(shop)
+                .orElseThrow(() -> new AppException(ErrorCode.RECEIPT_NOT_FOUND));
+        return new ShopInfoResponse(shop, menuList, isBookmarked, receipt.getImageUrl());
     }
     public Page<ShopBestMenuResponse> getSearchResultByShopName(double latitude, double longitude, String shopName, String orderBy, Pageable pageable) {
         Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllByShopName(latitude, longitude, shopName, orderBy, pageable);
