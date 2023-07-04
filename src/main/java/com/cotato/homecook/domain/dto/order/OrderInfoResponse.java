@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class OrderHistoryResponse {
+public class OrderInfoResponse {
     private Long orderHistoryId;
     private Long shopId;
     private String shopName;
@@ -16,7 +16,7 @@ public class OrderHistoryResponse {
     private LocalDateTime orderedAt;
     private Boolean isCompleted;
 
-    public OrderHistoryResponse(OrderHistory orderHistory) {
+    public OrderInfoResponse(OrderHistory orderHistory) {
         orderHistoryId = orderHistory.getOrderHistoryId();
         shopId = orderHistory.getShop().getShopId();
         shopName = orderHistory.getShop().getShopName();

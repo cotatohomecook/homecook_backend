@@ -1,11 +1,14 @@
 package com.cotato.homecook.service;
 
+import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
 import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
 import com.cotato.homecook.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,15 @@ public class ValidateService {
     public OrderHistory findOrderHistoryById(Long orderHistoryId) {
         return orderHistoryRepository.findById(orderHistoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_HISTORY_NOT_FOUND));
+    }
+
+    public OrderHistoryInfoResponse validateOrderInfoResponse(Long orderHistoryId) {
+        List<OrderHistoryInfoResponse> orderHistoryInfoList = orderHistoryRepository.findOrderInfoResponseByOrderHistoryId(orderHistoryId);
+        if(orderHistoryInfoList.isEmpty()){
+            throw new AppException(ErrorCode.ORDER_HISTORY_NOT_FOUND);
+        } {
+            return orderHistoryInfoList.get(0);
+        }
     }
 
     public void checkDuplicateReview(OrderHistory orderHistory) {
