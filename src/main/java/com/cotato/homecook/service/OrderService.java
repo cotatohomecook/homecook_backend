@@ -2,6 +2,7 @@ package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.menu.OrderMenu;
 import com.cotato.homecook.domain.dto.order.OrderHistoryResponse;
+import com.cotato.homecook.domain.dto.order.OrderHistorySellerResponse;
 import com.cotato.homecook.domain.dto.order.OrderRequest;
 import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.repository.*;
@@ -42,10 +43,16 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    public List<OrderHistorySellerResponse> getSellerInDeliveryOrders(Long shopId, String status) {
+        Shop shop = validateService.validateShop(shopId);
+        return orderHistoryRepository.findAllSellerOrderHistoryByShopId(shop, status);
+    }
+
     private void saveOrder(OrderHistory orderHistory, List<OrderQuantity> orderQuantityList, OrderMenu orderMenu) {
         Menu menu = validateService.validateMenu(orderMenu.getMenuId());
         OrderQuantity orderQuantity = orderMenu.toEntity(orderHistory, menu);
         orderQuantityRepository.save(orderQuantity);
         orderQuantityList.add(orderQuantity);
     }
+
 }

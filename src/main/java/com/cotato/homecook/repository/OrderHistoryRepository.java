@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderHistoryRepository extends JpaRepository<OrderHistory,Long> {
-    List<OrderHistory> findAllByShopAndReviewIsNotNull(Shop shop);
-
+public interface OrderHistoryRepository extends JpaRepository<OrderHistory, Long>, OrderHistoryCustomRepository {
     List<OrderHistory> findByCustomer_CustomerId(Long customerId);
 }
