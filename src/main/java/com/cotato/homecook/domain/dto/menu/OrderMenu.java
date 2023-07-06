@@ -5,9 +5,11 @@ import com.cotato.homecook.domain.entity.OrderHistory;
 import com.cotato.homecook.domain.entity.OrderQuantity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderMenu {
     Long menuId;
     Long quantity;

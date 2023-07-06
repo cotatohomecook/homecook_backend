@@ -1,6 +1,7 @@
 package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
+import com.cotato.homecook.domain.dto.menu.ShopDailyBestMenuResponse;
 import com.cotato.homecook.domain.dto.shop.ShopInfoResponse;
 import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopBestMenuResponse;
@@ -53,5 +54,10 @@ public class ShopController {
     @GetMapping("/info/{shopId}")
     public ApiResponse<ShopInfoResponse> getShopInfo(@PathVariable Long shopId){
         return ApiResponse.createSuccess(shopService.getShopInfo(shopId));
+    }
+
+    @GetMapping("/dailyBestMenu/{date}")
+    public ApiResponse<List<ShopDailyBestMenuResponse>> getShopDailyBestMenus(@PathVariable String date){
+        return ApiResponse.createSuccess(shopService.getShopDailyBestMenus(date));
     }
 }

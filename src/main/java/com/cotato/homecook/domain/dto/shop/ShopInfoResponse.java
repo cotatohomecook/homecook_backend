@@ -13,14 +13,18 @@ public class ShopInfoResponse {
 
     private Long shopId;
     private String shopName;
-    private String imageUrl;
+    private String shopImage;
 
+    private boolean isBookmarked;
+    private String receiptImage;
     List<ShopOrderMenuResponse> menus;
 
-    public ShopInfoResponse(Shop shop, List<ShopOrderMenuResponse> menuList) {
+    public ShopInfoResponse(Shop shop, List<ShopOrderMenuResponse> menuList, boolean isBookmarked, String imageUrl) {
         shopId = shop.getShopId();
         shopName = shop.getShopName();
-        imageUrl = shop.getImageUrl();
+        shopImage = shop.getImageUrl();
+        this.isBookmarked = isBookmarked;
+        receiptImage = imageUrl;
         menus = menuList;
     }
 }

@@ -6,12 +6,14 @@ import com.cotato.homecook.domain.entity.OrderHistory;
 import com.cotato.homecook.domain.entity.Shop;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderRequest {
     Long shopId;
     List<OrderMenu> orderMenus;
