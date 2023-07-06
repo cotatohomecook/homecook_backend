@@ -1,7 +1,12 @@
 package com.cotato.homecook.repository;
 
+import com.cotato.homecook.domain.dto.menu.OrderInfoMenu;
+import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
 import com.cotato.homecook.domain.dto.order.OrderHistorySellerResponse;
+import com.cotato.homecook.domain.dto.order.OrderInfoResponse;
 import com.cotato.homecook.domain.entity.Shop;
+import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.group.GroupExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -18,6 +23,8 @@ import static com.cotato.homecook.domain.entity.QMenu.menu;
 import static com.cotato.homecook.domain.entity.QOrderHistory.orderHistory;
 import static com.cotato.homecook.domain.entity.QOrderQuantity.orderQuantity;
 import static com.cotato.homecook.domain.entity.QReview.review;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.types.dsl.Expressions.list;
 
 @Repository
 @RequiredArgsConstructor
@@ -52,6 +59,32 @@ public class OrderHistoryCustomRepositoryImpl implements OrderHistoryCustomRepos
                 .orderBy(orderHistory.orderedAt.desc(), menu.price.desc().nullsLast())
                 .groupBy(orderHistory.orderHistoryId)
                 .fetch();
+    }
+
+    @Override
+    public List<OrderHistoryInfoResponse> findOrderInfoResponseByOrderHistoryId(Long orderHistoryId) {
+        return jpaQueryFactory
+                .selectFrom(orderHistory)
+                .leftJoin(orderHistory.orderQuantities, orderQuantity)
+                .leftJoin(orderQuantity.menu, menu)
+                .where(orderHistory.orderHistoryId.eq(orderHistoryId))
+                .transform(
+                        groupBy(orderHistory.orderHistoryId).list(
+                                Projections.fields(
+                                        OrderHistoryInfoResponse.class,
+                                        orderHistory.customer.customerName,
+                                        orderHistory.orderHistoryId,
+                                        GroupBy.list(
+                                                Projections.constructor(
+                                                        OrderInfoMenu.class,
+                                                        orderQuantity.quantity.as("quantity"),
+                                                        menu.menuName.as("menuName"),
+                                                        menu.imageUrl.as("imageUrl")
+                                                )
+                                        ).as("menuList")
+                                )
+                        )
+                );
     }
 
 

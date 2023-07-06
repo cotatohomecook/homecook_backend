@@ -1,7 +1,9 @@
 package com.cotato.homecook.service;
 
+import com.cotato.homecook.domain.dto.menu.OrderInfoMenu;
 import com.cotato.homecook.domain.dto.menu.OrderMenu;
-import com.cotato.homecook.domain.dto.order.OrderHistoryResponse;
+import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
+import com.cotato.homecook.domain.dto.order.OrderInfoResponse;
 import com.cotato.homecook.domain.dto.order.OrderHistorySellerResponse;
 import com.cotato.homecook.domain.dto.order.OrderRequest;
 import com.cotato.homecook.domain.entity.*;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,10 +39,10 @@ public class OrderService {
 
     // TODO: 북마크 여부 넘겨줘야함
     // TODO: 리뷰 작성 여부 넘겨줘야함
-    public List<OrderHistoryResponse> getOrderHistories() {
+    public List<OrderInfoResponse> getOrderHistories() {
         return orderHistoryRepository.findByCustomer_CustomerId(329329L)
                 .stream()
-                .map(OrderHistoryResponse::new)
+                .map(OrderInfoResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -48,11 +51,16 @@ public class OrderService {
         return orderHistoryRepository.findAllSellerOrderHistoryByShopId(shop, status);
     }
 
+    public OrderHistoryInfoResponse getOrderInfo(Long orderHistoryId) {
+        return validateService.validateOrderInfoResponse(orderHistoryId);
+    }
+
     private void saveOrder(OrderHistory orderHistory, List<OrderQuantity> orderQuantityList, OrderMenu orderMenu) {
         Menu menu = validateService.validateMenu(orderMenu.getMenuId());
         OrderQuantity orderQuantity = orderMenu.toEntity(orderHistory, menu);
         orderQuantityRepository.save(orderQuantity);
         orderQuantityList.add(orderQuantity);
     }
+
 
 }
