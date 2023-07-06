@@ -57,7 +57,7 @@ public class ShopController {
     }
 
     @GetMapping("/dailyBestMenu/{date}")
-    public ApiResponse<ShopDailyBestMenuResponse> getShopDailyBestMenu(@PathVariable String date){
-        return ApiResponse.createSuccess(shopService.getShopDailyBestMenu(date));
+    public ApiResponse<List<ShopDailyBestMenuResponse>> getShopDailyBestMenus(@PathVariable String date){
+        return ApiResponse.createSuccess(shopService.getShopDailyBestMenus(date));
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +90,40 @@ public class ShopService {
         return shopBestMenuResponse;
     }
 
-    public ShopDailyBestMenuResponse getShopDailyBestMenu(String date) {
-        return null;
+    public List<ShopDailyBestMenuResponse> getShopDailyBestMenus(String date) {
+        // TODO: 자기 자신의 가게의 ID를 불러오게 하기
+        Long shopId = 10L;
+        LocalDate currentDate = LocalDate.now();  // 현재 날짜
+        LocalDate inputDate = LocalDate.parse(date); // 입력 받은 날짜(문자열)를 LocalDateTime 타입으로 변경
+        if(currentDate.equals(inputDate)) return getBestMenu2Days(inputDate, shopId);
+        else return getBestMenu3Days(inputDate, shopId);
+    }
+
+    // 전일과 당일의 베스트 메뉴를 불러오는 메서드
+    private List<ShopDailyBestMenuResponse> getBestMenu2Days(LocalDate inputDate, Long shopId) {
+        ArrayList<ShopDailyBestMenuResponse> dailyBestMenus = new ArrayList<>();
+        dailyBestMenus.add(getShopDailyBestMenuResponse(inputDate.minusDays(1), shopId));
+        dailyBestMenus.add(getShopDailyBestMenuResponse(inputDate, shopId));
+        return dailyBestMenus;
+    }
+
+    // 전일과 당일과 명일의 베스트 메뉴를 불러오는 메서드
+    private List<ShopDailyBestMenuResponse> getBestMenu3Days(LocalDate inputDate, Long shopId) {
+        ArrayList<ShopDailyBestMenuResponse> dailyBestMenus = new ArrayList<>();
+        dailyBestMenus.add(getShopDailyBestMenuResponse(inputDate.minusDays(1), shopId));
+        dailyBestMenus.add(getShopDailyBestMenuResponse(inputDate, shopId));
+        dailyBestMenus.add(getShopDailyBestMenuResponse(inputDate.plusDays(1), shopId));
+        return dailyBestMenus;
+    }
+
+    private ShopDailyBestMenuResponse getShopDailyBestMenuResponse(LocalDate inputDate, Long shopId) {
+        ShopDailyBestMenuResponse dailyBestMenu = menuRepository.findDailyBestMenuByDateAndShopId(inputDate.minusDays(1), shopId);
+        if(dailyBestMenu == null) { // 존재하지 않는다면
+            return new ShopDailyBestMenuResponse(inputDate); // 날짜만 반환
+        }
+        else {
+            dailyBestMenu.setLocalDate(inputDate);
+            return dailyBestMenu;
+        }
     }
 }
