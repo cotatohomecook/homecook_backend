@@ -15,6 +15,8 @@ public class OrderInfoResponse {
     private String imageUrl;
     private LocalDateTime orderedAt;
     private Boolean isCompleted;
+    private Boolean isBookmarked;
+    private Boolean isReviewWritten;
 
     public OrderInfoResponse(OrderHistory orderHistory) {
         orderHistoryId = orderHistory.getOrderHistoryId();
@@ -24,4 +26,11 @@ public class OrderInfoResponse {
         orderedAt = orderHistory.getOrderedAt();
         isCompleted = orderHistory.getIsCompleted();
     }
+    public void setIsBookmarked(Boolean isBookmarked){
+        this.isBookmarked = isBookmarked;
+    }
+    public void setIsReviewWritten(Boolean isReviewWritten){
+        this.isReviewWritten = isReviewWritten;
+    }
+
 }
