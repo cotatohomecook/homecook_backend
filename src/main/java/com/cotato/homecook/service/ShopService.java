@@ -43,6 +43,9 @@ public class ShopService {
         if (!(receiptUploadRequest.getReceiptImage().isEmpty())) {
             imageUrl = s3Utils.uploadFiles(receiptUploadRequest.getReceiptImage(), "receipt");
         }
+        else {
+            throw new AppException(ErrorCode.IMAGE_PROCESSING_FAIL);
+        }
         Receipt savedReceipt = receiptRepository.save(new Receipt(imageUrl, shop));
         return ReceiptUploadResponse.toDto(savedReceipt);
     }
