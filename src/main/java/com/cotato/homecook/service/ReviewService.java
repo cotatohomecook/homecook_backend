@@ -24,7 +24,7 @@ public class ReviewService {
         // TODO : 사용자 정보 받아서 적용하는 로직, 사용자가 주문한 기록에 대해서만 리뷰 작성 가능하게끔 처리
         // TODO : 예외처리도 깔끔하게
         // 원래는 주문 번호도 dto에 들어있음
-        OrderHistory orderHistory = validateService.findOrderHistoryById(reviewDto.getOrderHistoryId());
+        OrderHistory orderHistory = validateService.validateOrderHistory(reviewDto.getOrderHistoryId());
         validateService.checkDuplicateReview(orderHistory);
         String imageUrl = null;
         if (!(reviewDto.getReviewImage().isEmpty())) {

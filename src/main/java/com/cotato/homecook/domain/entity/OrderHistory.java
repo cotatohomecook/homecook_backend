@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderHistory {
+public class  OrderHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderHistoryId;

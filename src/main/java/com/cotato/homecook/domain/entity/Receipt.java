@@ -26,7 +26,12 @@ public class Receipt {
     private Shop shop;
     private String imageUrl;
 
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @CreationTimestamp
     private Date uploadedAt;
+
+    public Receipt(String imageUrl, Shop shop) {
+        this.shop = shop;
+        this.imageUrl = imageUrl;
+    }
 }

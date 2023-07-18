@@ -2,10 +2,13 @@ package com.cotato.homecook.controller;
 
 import com.cotato.homecook.domain.dto.ApiResponse;
 import com.cotato.homecook.domain.dto.menu.ShopDailyBestMenuResponse;
+import com.cotato.homecook.domain.dto.receipt.ReceiptUploadRequest;
+import com.cotato.homecook.domain.dto.receipt.ReceiptUploadResponse;
 import com.cotato.homecook.domain.dto.shop.ShopInfoResponse;
 import com.cotato.homecook.domain.dto.shop.ShopMapResponse;
 import com.cotato.homecook.domain.dto.shop.ShopBestMenuResponse;
 import com.cotato.homecook.domain.dto.shop.ShopRankResponse;
+import com.cotato.homecook.exception.ImageException;
 import com.cotato.homecook.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,11 @@ import java.util.List;
 @RequestMapping("/api/shops")
 public class ShopController {
     private final ShopService shopService;
+
+    @PostMapping("/{shopId}/receipt")
+    public ApiResponse<ReceiptUploadResponse> uploadRceipt(@PathVariable("shopId") Long shopId, ReceiptUploadRequest receiptUploadRequest) throws ImageException {
+        return ApiResponse.createSuccess(shopService.uploadReceipt(receiptUploadRequest, shopId));
+    }
 
     @GetMapping("/rank")
     public ApiResponse<List<ShopRankResponse>> getRankTop10(@RequestParam double latitude, @RequestParam double longitude) {
@@ -52,12 +60,12 @@ public class ShopController {
     }
 
     @GetMapping("/info/{shopId}")
-    public ApiResponse<ShopInfoResponse> getShopInfo(@PathVariable Long shopId){
+    public ApiResponse<ShopInfoResponse> getShopInfo(@PathVariable Long shopId) {
         return ApiResponse.createSuccess(shopService.getShopInfo(shopId));
     }
 
     @GetMapping("/dailyBestMenu/{date}")
-    public ApiResponse<List<ShopDailyBestMenuResponse>> getShopDailyBestMenus(@PathVariable String date){
+    public ApiResponse<List<ShopDailyBestMenuResponse>> getShopDailyBestMenus(@PathVariable String date) {
         return ApiResponse.createSuccess(shopService.getShopDailyBestMenus(date));
     }
 }
