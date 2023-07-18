@@ -29,7 +29,7 @@ public class BookmarkService {
 
     // 식당 즐겨찾기 설정
     @Transactional
-    public String bookmarkShop(@PathVariable Long shopId, @PathVariable String folderName) {
+    public String  bookmarkShop(@PathVariable Long shopId, @PathVariable String folderName) {
         // TODO: Custom Exception으로 설정하기
         // TODO: 로그인 구현 후 사용자 정보를 토큰에서 바로 뽑아오도록 설정하기
 //        String email = SecurityUtil.getEmail();

@@ -8,6 +8,9 @@ import com.cotato.homecook.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,17 +21,28 @@ public class ValidateService {
     private final MenuRepository menuRepository;
     private final ReviewRepository reviewRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final ReceiptRepository receiptRepository;
 
-    public OrderHistory findOrderHistoryById(Long orderHistoryId) {
+    public void checkDuplicateReceipt(Shop shop) {
+        LocalDate today = LocalDate.now();
+        Date todayStart = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date todayEnd = Date.from(today.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        if (receiptRepository.existsByUploadedAtBetweenAndShop(todayStart, todayEnd, shop)) {
+            throw new AppException(ErrorCode.RECEIPT_ALREADY_EXIST);
+        }
+    }
+
+    public OrderHistory validateOrderHistory(Long orderHistoryId) {
         return orderHistoryRepository.findById(orderHistoryId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_HISTORY_NOT_FOUND));
     }
 
     public OrderHistoryInfoResponse validateOrderInfoResponse(Long orderHistoryId) {
         List<OrderHistoryInfoResponse> orderHistoryInfoList = orderHistoryRepository.findOrderInfoResponseByOrderHistoryId(orderHistoryId);
-        if(orderHistoryInfoList.isEmpty()){
+        if (orderHistoryInfoList.isEmpty()) {
             throw new AppException(ErrorCode.ORDER_HISTORY_NOT_FOUND);
-        } {
+        }
+        {
             return orderHistoryInfoList.get(0);
         }
     }
@@ -39,18 +53,20 @@ public class ValidateService {
         }
     }
 
-    public Shop validateShop(Long shopId){
+    public Shop validateShop(Long shopId) {
         return shopRepository.findById(shopId)
-                .orElseThrow(()-> new AppException(ErrorCode.SHOP_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.SHOP_NOT_FOUND));
     }
 
-    public Menu validateMenu(Long menuId){
-        return menuRepository.findById(menuId).orElseThrow(()-> new AppException(ErrorCode.MENU_NOT_FOUND));
+    public Menu validateMenu(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() -> new AppException(ErrorCode.MENU_NOT_FOUND));
     }
-    public Review validateReview(Long reviewId){
-        return reviewRepository.findById(reviewId).orElseThrow(()-> new AppException(ErrorCode.REVIEW_NOT_FOUND));
+
+    public Review validateReview(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_FOUND));
     }
-    public Bookmark validateBookmark(Long bookmarkId){
-        return bookmarkRepository.findById(bookmarkId).orElseThrow(()-> new AppException(ErrorCode.BOOKMARK_NOT_FOUND));
+
+    public Bookmark validateBookmark(Long bookmarkId) {
+        return bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new AppException(ErrorCode.BOOKMARK_NOT_FOUND));
     }
 }
