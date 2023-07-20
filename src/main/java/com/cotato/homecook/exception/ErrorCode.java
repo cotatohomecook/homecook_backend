@@ -16,8 +16,9 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 북마크입니다."),
     CUSTOMER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 구매자입니다."),
-    RECEIPT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 영수증입니다.");
-
+    RECEIPT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 영수증입니다."),
+    SELLER_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 판매자입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 사용자입니다.");
     private final HttpStatus httpStatus;
     private final String message;
     }

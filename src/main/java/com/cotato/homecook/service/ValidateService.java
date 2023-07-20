@@ -22,6 +22,8 @@ public class ValidateService {
     private final ReviewRepository reviewRepository;
     private final BookmarkRepository bookmarkRepository;
     private final ReceiptRepository receiptRepository;
+    private final CustomerRepository customerRepository;
+    private final SellerRepository sellerRepository;
 
     public void checkDuplicateReceipt(Shop shop) {
         LocalDate today = LocalDate.now();
@@ -68,5 +70,21 @@ public class ValidateService {
 
     public Bookmark validateBookmark(Long bookmarkId) {
         return bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new AppException(ErrorCode.BOOKMARK_NOT_FOUND));
+    }
+
+    public Customer validateCustomerById(Long customerId) {
+        return customerRepository.findByCustomerId(customerId).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
+    }
+
+    public Seller validateSellerById(Long sellerId) {
+        return sellerRepository.findBySellerId(sellerId).orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_FOUND));
+    }
+
+    public Customer validateCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
+    }
+
+    public Seller validateSellerByEmail(String email) {
+        return sellerRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_FOUND));
     }
 }
