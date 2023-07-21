@@ -1,4 +1,4 @@
-package com.cotato.homecook.config;
+package com.cotato.homecook.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

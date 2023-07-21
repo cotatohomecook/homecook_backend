@@ -3,6 +3,8 @@ package com.cotato.homecook.controller;
 import com.cotato.homecook.domain.dto.ApiResponse;
 import com.cotato.homecook.domain.dto.auth.CustomerJoinRequest;
 import com.cotato.homecook.domain.dto.auth.CustomerJoinResponse;
+import com.cotato.homecook.domain.dto.auth.LoginRequest;
+import com.cotato.homecook.domain.dto.auth.LoginResponse;
 import com.cotato.homecook.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,5 +20,10 @@ public class AuthController {
     @PostMapping("/join/customer")
     public ApiResponse<CustomerJoinResponse> joinCustomer(@RequestBody CustomerJoinRequest customerJoinRequest){
         return ApiResponse.createSuccess(authService.createCustomer(customerJoinRequest));
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+        return ApiResponse.createSuccess(authService.login(loginRequest));
     }
 }
