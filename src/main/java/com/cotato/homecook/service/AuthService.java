@@ -2,10 +2,7 @@ package com.cotato.homecook.service;
 
 import com.cotato.homecook.config.auth.PrincipalDetails;
 import com.cotato.homecook.config.security.JwtUtils;
-import com.cotato.homecook.domain.dto.auth.CustomerJoinRequest;
-import com.cotato.homecook.domain.dto.auth.CustomerJoinResponse;
-import com.cotato.homecook.domain.dto.auth.LoginRequest;
-import com.cotato.homecook.domain.dto.auth.LoginResponse;
+import com.cotato.homecook.domain.dto.auth.*;
 import com.cotato.homecook.domain.entity.Customer;
 import com.cotato.homecook.domain.entity.Seller;
 import com.cotato.homecook.enums.Role;
@@ -25,6 +22,7 @@ import java.util.Optional;
 public class AuthService {
     private final CustomerRepository customerRepository;
     private final SellerRepository sellerRepository;
+    private final ValidateService validateService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
@@ -41,20 +39,11 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Optional<Customer> customer = customerRepository.findByEmail(loginRequest.getEmail());
-        Optional<Seller> seller = sellerRepository.findByEmail(loginRequest.getEmail());
-        if (customer.isPresent()) {
-            if (passwordEncoder.matches(loginRequest.getPassword(), customer.get().getPassword()))
-                return new LoginResponse(jwtUtils.createToken(loginRequest.getEmail(), customer.get().getRole().value(), customer.get().getCustomerName()));
-            else
-                throw new AppException(ErrorCode.INCORRECT_PASSWORD);
-        } else if (seller.isPresent()) {
-            if (passwordEncoder.matches(loginRequest.getPassword(), seller.get().getPassword()))
-                return new LoginResponse(jwtUtils.createToken(loginRequest.getEmail(), seller.get().getRole().value(), seller.get().getSellerName()));
-            else
-                throw new AppException(ErrorCode.INCORRECT_PASSWORD);
+        UserDto userDto = validateService.validateUserByEmail(loginRequest.getEmail());
+        if (passwordEncoder.matches(loginRequest.getPassword(), userDto.getPassword())) {
+            return new LoginResponse(jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername()));
         } else {
-            throw new AppException(ErrorCode.USER_NOT_FOUND);
+            throw new AppException(ErrorCode.INCORRECT_PASSWORD);
         }
     }
 }

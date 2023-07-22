@@ -1,5 +1,6 @@
 package com.cotato.homecook.service;
 
+import com.cotato.homecook.domain.dto.auth.UserDto;
 import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
 import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.exception.AppException;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -72,19 +74,16 @@ public class ValidateService {
         return bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new AppException(ErrorCode.BOOKMARK_NOT_FOUND));
     }
 
-    public Customer validateCustomerById(Long customerId) {
-        return customerRepository.findByCustomerId(customerId).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
+    public UserDto validateUserByEmail(String email) {
+        Optional<Customer> customer = customerRepository.findByEmail(email);
+        if (customer.isPresent()) {
+            return new UserDto(customer.get().getEmail(), customer.get().getPassword(), customer.get().getCustomerName(), customer.get().getRole().value());
+        }
+        Optional<Seller> seller = sellerRepository.findByEmail(email);
+        if (seller.isPresent()) {
+            return new UserDto(seller.get().getEmail(), seller.get().getPassword(), seller.get().getSellerName(), seller.get().getRole().value());
+        }
+        throw new AppException(ErrorCode.USER_NOT_FOUND);
     }
 
-    public Seller validateSellerById(Long sellerId) {
-        return sellerRepository.findBySellerId(sellerId).orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_FOUND));
-    }
-
-    public Customer validateCustomerByEmail(String email) {
-        return customerRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
-    }
-
-    public Seller validateSellerByEmail(String email) {
-        return sellerRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.SELLER_NOT_FOUND));
-    }
 }
