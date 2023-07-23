@@ -10,11 +10,15 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final CorsConfig corsConfig;
+    private final CorsFilter corsFilter;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -26,10 +30,11 @@ public class SecurityConfig {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .addFilter(corsFilter)
                 .formLogin().disable()
                 .httpBasic().disable()
-//                .apply(new MyCustomDsl()) // AuthenticationManager를 넘겨야됨
-//                .and()
+                .apply(new MyCustomDsl()) // AuthenticationManager를 넘겨야됨
+                .and()
                 .authorizeRequests(authorize -> authorize
                         .antMatchers("/api/auth/**")
                         .permitAll()
@@ -48,14 +53,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
-//        @Override
-//        public void configure(HttpSecurity http) throws Exception {
-//            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-//            http
-//                    .addFilter(corsConfig.corsFilter())
-//                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
-//                    .addFilter(new JwtAuthorizationFilter(authenticationManager,userRepository));
-//        }
-//    }
+    public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            http
+                    .addFilter(corsConfig.corsFilter());
+        }
+    }
 }
