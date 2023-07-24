@@ -41,7 +41,7 @@ public class JwtUtils {
         try{
             Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
             return true;
-        } catch (SecurityException e){
+        } catch (SignatureException e){
             throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
         }
     }

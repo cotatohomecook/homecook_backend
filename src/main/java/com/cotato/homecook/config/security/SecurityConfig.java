@@ -55,7 +55,8 @@ public class SecurityConfig {
 //                        .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecretKey), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtSecretKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), JwtFilter.class);
 
 
         return http.build();
