@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LoginResponse {
-    String jwt;
+    String accessToken;
 }
