@@ -36,7 +36,12 @@ public class Customer {
     private String email;
     private String password;
     private String phoneNumber;
+    private String refreshToken;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
 }

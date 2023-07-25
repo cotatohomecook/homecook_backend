@@ -3,11 +3,13 @@ package com.cotato.homecook.service;
 import com.cotato.homecook.domain.dto.auth.UserDto;
 import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
 import com.cotato.homecook.domain.entity.*;
+import com.cotato.homecook.enums.Role;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
 import com.cotato.homecook.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -86,4 +88,26 @@ public class ValidateService {
         throw new AppException(ErrorCode.USER_NOT_FOUND);
     }
 
+    public Customer validateCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public Seller validateSellerByEmail(String email) {
+        return sellerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void updateUserRefreshToken(UserDto userDto,String refreshToken) {
+        String role = userDto.getRole();
+        if (role.equals(Role.ROLE_CUSTOMER.value())) {
+            System.out.println("+++++++++++++업데이트");
+            Customer customer = validateCustomerByEmail(userDto.getEmail());
+            customer.updateRefreshToken(refreshToken);
+        } else if (role.equals(Role.ROLE_SELLER.value())) {
+            Seller seller = validateSellerByEmail(userDto.getEmail());
+            seller.updateRefreshToken(refreshToken);
+        } else {
+            System.out.println("role = " + role);
+        }
+    }
 }

@@ -1,7 +1,5 @@
 package com.cotato.homecook.config.security;
 
-import com.cotato.homecook.config.auth.PrincipalDetails;
-import com.cotato.homecook.config.auth.PrincipalDetailsService;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
 import io.jsonwebtoken.*;
@@ -10,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import java.util.Base64;
 import java.util.Date;
 
 @RequiredArgsConstructor
