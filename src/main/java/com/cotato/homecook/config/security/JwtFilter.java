@@ -32,10 +32,9 @@ public class JwtFilter extends OncePerRequestFilter {
         System.out.println("=================필터==============");
         System.out.println("jwtSecretKey = " + jwtSecretKey);
         String accessToken = request.getHeader("ACCESS_TOKEN");
-        if(StringUtils.hasText(accessToken) && JwtUtils.validateToken(accessToken,jwtSecretKey)){
+        if(JwtUtils.validateToken(accessToken,jwtSecretKey)){
             String email = JwtUtils.getEmailFromToken(accessToken, jwtSecretKey);
             String role = JwtUtils.getRoleFromToken(accessToken, jwtSecretKey);
-            System.out.println("JwtUtils.getEmailFromToken(token) = " + email);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, "", List.of(new SimpleGrantedAuthority(role)));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }

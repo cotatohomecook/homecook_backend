@@ -4,13 +4,11 @@ import com.cotato.homecook.config.auth.PrincipalDetails;
 import com.cotato.homecook.config.auth.PrincipalDetailsService;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
@@ -21,7 +19,8 @@ import java.util.Date;
 public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecretKey;
-    private final long tokenValidTime = 30 * 60 * 1000L;
+    //    private final long tokenValidTime = 30 * 60 * 1000L;
+    private final long tokenValidTime = 10 * 1000L;
 
     public String createToken(String email, String role, String username) {
         Claims claims = Jwts.claims();
@@ -37,14 +36,20 @@ public class JwtUtils {
                 .compact();
     }
 
-    public static boolean validateToken(String token, String jwtSecretKey){
-        try{
+    public static boolean validateToken(String token, String jwtSecretKey) {
+        if(!StringUtils.hasText(token)){
+            throw new AppException(ErrorCode.JWT_TOKEN_NOT_EXISTS);
+        }
+        try {
             Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
             return true;
-        } catch (SignatureException e){
+        } catch (SignatureException | MalformedJwtException e) {
             throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+        } catch (ExpiredJwtException e) {
+            throw new AppException(ErrorCode.JWT_TOKEN_EXPIRED);
         }
     }
+
     public static String getEmailFromToken(String token, String jwtSecretKey) {
         return (String) getClaims(token, jwtSecretKey).get("email");
     }
