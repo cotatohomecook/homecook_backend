@@ -20,24 +20,26 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecretKey;
     //    private final long tokenValidTime = 30 * 60 * 1000L;
-    private final long tokenValidTime = 10 * 1000L;
+    private static final long accessTokenValidTime = 10 * 1000L;
+    private static final long refreshTokenValidTime = 30 * 60 * 1000L;
 
-    public String createToken(String email, String role, String username) {
+    public String createToken(String email, String role, String username, String type) {
         Claims claims = Jwts.claims();
         claims.put("email", email);
         claims.put("username", username);
         claims.put("role", role);
         Date now = new Date();
+        long validTime = type.equals("access") ? accessTokenValidTime : refreshTokenValidTime;
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenValidTime))
+                .setExpiration(new Date(now.getTime() + validTime))
                 .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
                 .compact();
     }
 
     public static boolean validateToken(String token, String jwtSecretKey) {
-        if(!StringUtils.hasText(token)){
+        if (!StringUtils.hasText(token)) {
             throw new AppException(ErrorCode.JWT_TOKEN_NOT_EXISTS);
         }
         try {

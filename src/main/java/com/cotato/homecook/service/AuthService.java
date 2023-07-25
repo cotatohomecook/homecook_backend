@@ -41,7 +41,10 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         UserDto userDto = validateService.validateUserByEmail(loginRequest.getEmail());
         if (passwordEncoder.matches(loginRequest.getPassword(), userDto.getPassword())) {
-            return new LoginResponse(jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername()));
+            return LoginResponse.builder()
+                    .accessToken(jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(),"access"))
+                    .refreshToken(jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(),"refresh"))
+                    .build();
         } else {
             throw new AppException(ErrorCode.INCORRECT_PASSWORD);
         }
