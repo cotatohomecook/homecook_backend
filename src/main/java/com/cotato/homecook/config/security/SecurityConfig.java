@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .apply(new MyCustomDsl()) // AuthenticationManager를 넘겨야됨
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login","/api/auth/join/**")
+                .antMatchers("/api/auth/**")
                 .permitAll()
                 .antMatchers("/api/**")
 ////                        .permitAll()
