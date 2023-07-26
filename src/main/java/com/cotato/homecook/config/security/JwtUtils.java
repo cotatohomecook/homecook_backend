@@ -12,15 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @RequiredArgsConstructor
-@Component
 public class JwtUtils {
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
-    //    private final long tokenValidTime = 30 * 60 * 1000L;
-    private static final long accessTokenValidTime = 10 * 1000L;
-    private static final long refreshTokenValidTime = 30 * 60 * 1000L;
+    private static final long accessTokenValidTime = 10 * 1000L; // 10초
+    private static final long refreshTokenValidTime = 30 * 60 * 1000L; // 30분
 
-    public String createToken(String email, String role, String username, String type) {
+    public static String createToken(String email, String role, String username, String type, String jwtSecretKey) {
         Claims claims = Jwts.claims();
         claims.put("email", email);
         claims.put("username", username);

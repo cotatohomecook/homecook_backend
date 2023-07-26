@@ -28,7 +28,6 @@ public class AuthService {
     private final SellerRepository sellerRepository;
     private final ValidateService validateService;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
 
     public CustomerJoinResponse createCustomer(CustomerJoinRequest customerJoinRequest) {
         // TODO : 중복 , 유효성 로직 추가 예정
@@ -45,8 +44,8 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         UserDto userDto = validateService.validateUserByEmail(loginRequest.getEmail());
         if (passwordEncoder.matches(loginRequest.getPassword(), userDto.getPassword())) {
-            String accessToken = jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(), "access");
-            String refreshToken = jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(), "refresh");
+            String accessToken = JwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(), "access", jwtSecretKey);
+            String refreshToken = JwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(), "refresh", jwtSecretKey);
             validateService.updateUserRefreshToken(userDto, refreshToken);
             return LoginResponse.builder()
                     .accessToken(accessToken)
@@ -63,7 +62,7 @@ public class AuthService {
             String email = JwtUtils.getEmailFromToken(refreshToken, jwtSecretKey);
             UserDto userDto = validateService.validateUserByEmail(email);
             if (userDto.getRefreshToken() != null && userDto.getRefreshToken().equals(refreshToken)) {
-                return new ReissueResponse(jwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(), "access"));
+                return new ReissueResponse(JwtUtils.createToken(userDto.getEmail(), userDto.getRole(), userDto.getUsername(), "access", jwtSecretKey));
             }
             throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
         }
