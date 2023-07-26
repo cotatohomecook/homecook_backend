@@ -18,8 +18,6 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
     private final CorsConfig corsConfig;
     private final CorsFilter corsFilter;
 
@@ -31,7 +29,6 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         // 시큐리티 필터가 커스텀 필터보다 먼저 작동함
-//        http.addFilterBefore(new MyFilter3(), SecurityContextHolderFilter.class);
         http.csrf().disable();
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -44,20 +41,11 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/**")
                 .permitAll()
                 .antMatchers("/api/**")
-////                        .permitAll()
                 .access("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
-//                        .hasAnyRole()
-//                        .antMatchers("/api/v1/user/**")
-//                        .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-//                        .antMatchers("/api/v1/manager/**")
-//                        .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-//                        .antMatchers("/api/v1/admin/**")
-//                        .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtFilter(jwtSecretKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtFilter.class);
-
 
         return http.build();
     }
@@ -65,8 +53,6 @@ public class SecurityConfig {
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-
             http
                     .addFilter(corsConfig.corsFilter());
         }
