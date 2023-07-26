@@ -1,5 +1,6 @@
 package com.cotato.homecook.config.security;
 
+import com.cotato.homecook.domain.dto.auth.UserDto;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
 import io.jsonwebtoken.*;
@@ -16,11 +17,11 @@ public class JwtUtils {
     private static final long accessTokenValidTime = 10 * 1000L; // 10초
     private static final long refreshTokenValidTime = 30 * 60 * 1000L; // 30분
 
-    public static String createToken(String email, String role, String username, String type, String jwtSecretKey) {
+    public static String createToken(UserDto userDto, String type, String jwtSecretKey) {
         Claims claims = Jwts.claims();
-        claims.put("email", email);
-        claims.put("username", username);
-        claims.put("role", role);
+        claims.put("email", userDto.getEmail());
+        claims.put("username", userDto.getUsername());
+        claims.put("role", userDto.getRole());
         Date now = new Date();
         long validTime = type.equals("access") ? accessTokenValidTime : refreshTokenValidTime;
         return Jwts.builder()
