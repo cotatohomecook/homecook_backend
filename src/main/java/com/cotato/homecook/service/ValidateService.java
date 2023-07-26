@@ -76,24 +76,24 @@ public class ValidateService {
         return bookmarkRepository.findById(bookmarkId).orElseThrow(() -> new AppException(ErrorCode.BOOKMARK_NOT_FOUND));
     }
 
-    public UserDto validateUserByEmail(String email) {
-        Optional<Customer> customer = customerRepository.findByEmail(email);
-        if (customer.isPresent()) {
-            return new UserDto(customer.get().getEmail(), customer.get().getPassword(), customer.get().getCustomerName(), customer.get().getRole().value());
-        }
-        Optional<Seller> seller = sellerRepository.findByEmail(email);
-        if (seller.isPresent()) {
-            return new UserDto(seller.get().getEmail(), seller.get().getPassword(), seller.get().getSellerName(), seller.get().getRole().value());
-        }
-        throw new AppException(ErrorCode.USER_NOT_FOUND);
-    }
-
     public Customer validateCustomerByEmail(String email) {
         return customerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public Seller validateSellerByEmail(String email) {
         return sellerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public UserDto validateUserByEmail(String email) {
+        Optional<Customer> customer = customerRepository.findByEmail(email);
+        if (customer.isPresent()) {
+            return new UserDto(customer.get());
+        }
+        Optional<Seller> seller = sellerRepository.findByEmail(email);
+        if (seller.isPresent()) {
+            return new UserDto(seller.get());
+        }
+        throw new AppException(ErrorCode.USER_NOT_FOUND);
     }
 
     @Transactional

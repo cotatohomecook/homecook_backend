@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @RequiredArgsConstructor
@@ -60,4 +61,11 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
     }
 
+    public static String resolveAccessToken(HttpServletRequest request) {
+        return request.getHeader("ACCESS_TOKEN");
+    }
+
+    public static String resolveRefreshToken(HttpServletRequest request) {
+        return request.getHeader("REFRESH_TOKEN");
+    }
 }

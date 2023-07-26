@@ -29,17 +29,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("=================필터==============");
-        System.out.println("jwtSecretKey = " + jwtSecretKey);
-        String accessToken = request.getHeader("ACCESS_TOKEN");
-        if(JwtUtils.validateToken(accessToken,jwtSecretKey)){
+        String accessToken = JwtUtils.resolveAccessToken(request);
+        if (JwtUtils.validateToken(accessToken, jwtSecretKey)) {
             setAuthentication(accessToken);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void setAuthentication(String accessToken){
+    private void setAuthentication(String accessToken) {
         String email = JwtUtils.getEmailFromToken(accessToken, jwtSecretKey);
         String role = JwtUtils.getRoleFromToken(accessToken, jwtSecretKey);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, "", List.of(new SimpleGrantedAuthority(role)));
@@ -48,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/auth/login", "/api/auth/join"};
+        String[] excludePath = {"/api/auth/login", "/api/auth/join", "/api/auth/reissue"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }
