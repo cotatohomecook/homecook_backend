@@ -20,6 +20,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
     private final CorsConfig corsConfig;
     private final CorsFilter corsFilter;
+    private final JwtFilter jwtFilter;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -28,7 +29,6 @@ public class SecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        // 시큐리티 필터가 커스텀 필터보다 먼저 작동함
         http.csrf().disable();
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .access("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtFilter.class);
 
         return http.build();

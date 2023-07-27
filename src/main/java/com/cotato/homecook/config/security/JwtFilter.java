@@ -1,19 +1,11 @@
 package com.cotato.homecook.config.security;
 
-import com.cotato.homecook.exception.ErrorCode;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.PortResolverImpl;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -24,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @NoArgsConstructor
+@Component
 public class JwtFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private String jwtSecretKey;
