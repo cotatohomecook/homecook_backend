@@ -5,8 +5,6 @@ import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +57,11 @@ public class JwtUtils {
     }
 
     public static String resolveAccessToken(HttpServletRequest request) {
-        return request.getHeader("ACCESS_TOKEN");
+        String jwtHeader = request.getHeader("Authorization");
+        if (jwtHeader != null && jwtHeader.startsWith("Bearer ")) {
+            return jwtHeader.replace("Bearer ", "");
+        } else {
+            return null;
+        }
     }
 }
