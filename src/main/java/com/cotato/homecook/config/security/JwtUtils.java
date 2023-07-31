@@ -14,7 +14,7 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 public class JwtUtils {
-    private static final long accessTokenValidTime = 10 * 1000L; // 10초
+    private static final long accessTokenValidTime = 60 * 60 * 1000L; // 10초
     private static final long refreshTokenValidTime = 30 * 60 * 1000L; // 30분
 
     public static String createToken(UserDto userDto, String type, String jwtSecretKey) {
