@@ -61,8 +61,4 @@ public class JwtUtils {
     public static String resolveAccessToken(HttpServletRequest request) {
         return request.getHeader("ACCESS_TOKEN");
     }
-
-    public static String resolveRefreshToken(HttpServletRequest request) {
-        return request.getHeader("REFRESH_TOKEN");
-    }
 }
