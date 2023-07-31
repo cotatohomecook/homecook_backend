@@ -22,7 +22,9 @@ public enum ErrorCode {
     INCORRECT_PASSWORD(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다."),
     WRONG_JWT_TOKEN(HttpStatus.UNAUTHORIZED,"잘못된 JWT 서명입니다."),
     JWT_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,"JWT 토큰이 만료되었습니다."),
-    JWT_TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED,"헤더에 JWT 토큰 값이 존재하지 않습니다");
+    JWT_TOKEN_NOT_EXISTS(HttpStatus.UNAUTHORIZED,"헤더에 JWT 토큰 값이 존재하지 않습니다"),
+    DUPLICATE_EMAIL(HttpStatus.UNAUTHORIZED,"중복된 이메일입니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;

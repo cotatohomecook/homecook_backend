@@ -30,6 +30,7 @@ public class AuthService {
 
     public CustomerJoinResponse createCustomer(CustomerJoinRequest customerJoinRequest) {
         // TODO : 중복 , 유효성 로직 추가 예정
+        validateService.checkDuplicateEmail(customerJoinRequest.getEmail());
         Customer savedCustomer = customerRepository.save(Customer.builder()
                 .email(customerJoinRequest.getEmail())
                 .password(passwordEncoder.encode(customerJoinRequest.getPassword()))

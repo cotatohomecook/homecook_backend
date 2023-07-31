@@ -59,6 +59,11 @@ public class ValidateService {
         }
     }
 
+    public void checkDuplicateEmail(String email) {
+        if(sellerRepository.existsByEmail(email) || customerRepository.existsByEmail(email))
+            throw new AppException(ErrorCode.DUPLICATE_EMAIL);
+    }
+
     public Shop validateShop(Long shopId) {
         return shopRepository.findById(shopId)
                 .orElseThrow(() -> new AppException(ErrorCode.SHOP_NOT_FOUND));
@@ -77,11 +82,11 @@ public class ValidateService {
     }
 
     public Customer validateCustomerByEmail(String email) {
-        return customerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
+        return customerRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public Seller validateSellerByEmail(String email) {
-        return sellerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND));
+        return sellerRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public UserDto validateUserByEmail(String email) {
@@ -97,7 +102,7 @@ public class ValidateService {
     }
 
     @Transactional
-    public void updateUserRefreshToken(UserDto userDto,String refreshToken) {
+    public void updateUserRefreshToken(UserDto userDto, String refreshToken) {
         String role = userDto.getRole();
         if (role.equals(Role.ROLE_CUSTOMER.value())) {
             System.out.println("+++++++++++++업데이트");
