@@ -1,6 +1,7 @@
 package com.cotato.homecook.config.security;
 
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,16 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
+    private final JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = JwtUtils.resolveAccessToken(request);
-        if (JwtUtils.validateToken(accessToken, jwtSecretKey)) {
+        String accessToken = jwtUtils.resolveAccessToken(request);
+        if (jwtUtils.validateToken(accessToken)) {
             setAuthentication(accessToken);
         }
 
@@ -32,8 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(String accessToken) {
-        String email = JwtUtils.getEmailFromToken(accessToken, jwtSecretKey);
-        String role = JwtUtils.getRoleFromToken(accessToken, jwtSecretKey);
+        String email = jwtUtils.getEmailFromToken(accessToken);
+        String role = jwtUtils.getRoleFromToken(accessToken);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, "", List.of(new SimpleGrantedAuthority(role)));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }

@@ -22,8 +22,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
+    private final JwtUtils jwtUtils;
     private final CustomerRepository customerRepository;
     private final SellerRepository sellerRepository;
     private final ValidateService validateService;
@@ -44,8 +43,8 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         UserDto userDto = validateService.validateUserByEmail(loginRequest.getEmail());
         if (passwordEncoder.matches(loginRequest.getPassword(), userDto.getPassword())) {
-            String accessToken = JwtUtils.createToken(userDto, "access", jwtSecretKey);
-            String refreshToken = JwtUtils.createToken(userDto, "refresh", jwtSecretKey);
+            String accessToken = jwtUtils.createToken(userDto, "access");
+            String refreshToken = jwtUtils.createToken(userDto, "refresh");
             validateService.updateUserRefreshToken(userDto, refreshToken);
             return LoginResponse.builder()
                     .accessToken(accessToken)
@@ -58,11 +57,11 @@ public class AuthService {
 
     public ReissueResponse reissue(ReissueRequest reissueRequest) {
         String refreshToken = reissueRequest.getRefreshToken();
-        if (JwtUtils.validateToken(refreshToken, jwtSecretKey)) {
-            String email = JwtUtils.getEmailFromToken(refreshToken, jwtSecretKey);
+        if (jwtUtils.validateToken(refreshToken)) {
+            String email = jwtUtils.getEmailFromToken(refreshToken);
             UserDto userDto = validateService.validateUserByEmail(email);
             if (userDto.getRefreshToken() != null && userDto.getRefreshToken().equals(refreshToken)) {
-                return new ReissueResponse(JwtUtils.createToken(userDto, "access", jwtSecretKey));
+                return new ReissueResponse(jwtUtils.createToken(userDto, "access"));
             }
             throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
         }
