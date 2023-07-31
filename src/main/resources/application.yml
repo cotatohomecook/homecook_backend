@@ -3,6 +3,8 @@ server:
 
 jwt:
   secret: ${JWT_SECRET_KEY}
+  access-token-time: 30 * 60 * 1000
+  refresh-token-time: 60 * 60 * 1000
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -5,6 +5,7 @@ import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +13,10 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 public class JwtUtils {
-    private static final long accessTokenValidTime = 60 * 60 * 1000L; // 10초
-    private static final long refreshTokenValidTime = 30 * 60 * 1000L; // 30분
+    @Value("${jwt.access-token-time}")
+    private static long accessTokenTime;
+    @Value("${jwt.refresh-token-time}")
+    private static long refreshTokenTime;
 
     public static String createToken(UserDto userDto, String type, String jwtSecretKey) {
         Claims claims = Jwts.claims();
@@ -21,7 +24,7 @@ public class JwtUtils {
         claims.put("username", userDto.getUsername());
         claims.put("role", userDto.getRole());
         Date now = new Date();
-        long validTime = type.equals("access") ? accessTokenValidTime : refreshTokenValidTime;
+        long validTime = type.equals("access") ? accessTokenTime : refreshTokenTime;
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
