@@ -1,6 +1,5 @@
 package com.cotato.homecook.service;
 
-import com.cotato.homecook.config.auth.PrincipalDetails;
 import com.cotato.homecook.config.security.JwtUtils;
 import com.cotato.homecook.domain.dto.auth.*;
 import com.cotato.homecook.domain.entity.Customer;
@@ -11,13 +10,8 @@ import com.cotato.homecook.exception.ErrorCode;
 import com.cotato.homecook.repository.CustomerRepository;
 import com.cotato.homecook.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,17 +22,24 @@ public class AuthService {
     private final ValidateService validateService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public CustomerJoinResponse createCustomer(CustomerJoinRequest customerJoinRequest) {
+    public JoinResponse createUser(JoinRequest joinRequest) {
         // TODO : 중복 , 유효성 로직 추가 예정
-        validateService.checkDuplicateEmail(customerJoinRequest.getEmail());
+        validateService.checkDuplicateEmail(joinRequest.getEmail());
         Customer savedCustomer = customerRepository.save(Customer.builder()
-                .email(customerJoinRequest.getEmail())
-                .password(passwordEncoder.encode(customerJoinRequest.getPassword()))
-                .customerName(customerJoinRequest.getCustomerName())
+                .email(joinRequest.getEmail())
+                .password(passwordEncoder.encode(joinRequest.getPassword()))
+                .customerName(joinRequest.getUsername())
                 .role(Role.ROLE_CUSTOMER)
                 .build());
 
-        return new CustomerJoinResponse(savedCustomer.getCustomerId());
+        Seller savedSeller = sellerRepository.save(Seller.builder()
+                .email(joinRequest.getEmail())
+                .password(passwordEncoder.encode(joinRequest.getPassword()))
+                .sellerName(joinRequest.getUsername())
+                .role(Role.ROLE_SELLER)
+                .build());
+
+        return new JoinResponse(savedCustomer.getCustomerId(), savedSeller.getSellerId());
     }
 
     public LoginResponse login(LoginRequest loginRequest) {

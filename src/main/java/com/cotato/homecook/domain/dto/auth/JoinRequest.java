@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CustomerJoinResponse {
-    Long customerId;
+@NoArgsConstructor
+public class JoinRequest {
+    String email;
+    String password;
+    String username;
 }
