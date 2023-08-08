@@ -6,6 +6,10 @@ jwt:
   access-token-time: 1800000
   refresh-token-time: 3600000
 spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_ENDPOINT}:3306/homecook
