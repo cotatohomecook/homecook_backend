@@ -28,10 +28,10 @@ public class AuthController {
         return ApiResponse.createSuccess(authService.login(loginRequest));
     }
 
-//    @PostMapping("/reissue")
-//    public ApiResponse<ReissueResponse> reissue(@RequestBody ReissueRequest reissueRequest) {
-//        return ApiResponse.createSuccess(authService.reissue(reissueRequest));
-//    }
+    @PostMapping("/reissue")
+    public ApiResponse<ReissueResponse> reissue(@RequestBody ReissueRequest reissueRequest) {
+        return ApiResponse.createSuccess(authService.reissue(reissueRequest));
+    }
 
     @GetMapping("/test")
     public ApiResponse<String> test() {

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReissueRequest {
     String refreshToken;
+    String role;
 }

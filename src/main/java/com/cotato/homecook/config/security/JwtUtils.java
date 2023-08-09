@@ -57,6 +57,10 @@ public class JwtUtils {
         stringRedisTemplate.opsForValue().set(userDto.getEmail(), refreshToken);
     }
 
+    public String getUserRefreshToken(String email) {
+        return stringRedisTemplate.opsForValue().get(email);
+    }
+
     public boolean validateToken(String token) {
         if (!StringUtils.hasText(token)) {
             throw new AppException(ErrorCode.JWT_TOKEN_NOT_EXISTS);

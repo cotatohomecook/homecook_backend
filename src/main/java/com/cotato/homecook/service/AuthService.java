@@ -60,17 +60,17 @@ public class AuthService {
         }
     }
 
-//    public ReissueResponse reissue(ReissueRequest reissueRequest) {
-//        String refreshToken = reissueRequest.getRefreshToken();
-//        if (jwtUtils.validateToken(refreshToken)) {
-//            String email = jwtUtils.getEmailFromToken(refreshToken);
-//            UserDto userDto = validateService.validateUserByEmail(email);
-//            if (userDto.getRefreshToken() != null && userDto.getRefreshToken().equals(refreshToken)) {
-//                return new ReissueResponse(jwtUtils.createToken(userDto, "access"));
-//            }
-//            throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
-//        }
-//        throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
-//    }
-//}
- }
+    public ReissueResponse reissue(ReissueRequest reissueRequest) {
+        String refreshToken = reissueRequest.getRefreshToken();
+        if (jwtUtils.validateToken(refreshToken)) {
+            String email = jwtUtils.getEmailFromToken(refreshToken);
+            UserDto userDto = validateService.validateUserByEmail(email);
+            String userRefreshToken = jwtUtils.getUserRefreshToken(email);
+            if (userRefreshToken != null && userRefreshToken.equals(refreshToken)) {
+                return new ReissueResponse(jwtUtils.createAccessToken(userDto, reissueRequest.getRole()));
+            }
+            throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+        }
+        throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+    }
+}
