@@ -60,7 +60,7 @@ public class ValidateService {
     }
 
     public void checkDuplicateEmail(String email) {
-        if(sellerRepository.existsByEmail(email) || customerRepository.existsByEmail(email))
+        if (sellerRepository.existsByEmail(email) || customerRepository.existsByEmail(email))
             throw new AppException(ErrorCode.DUPLICATE_EMAIL);
     }
 
@@ -94,25 +94,10 @@ public class ValidateService {
         if (customer.isPresent()) {
             return new UserDto(customer.get());
         }
-        Optional<Seller> seller = sellerRepository.findByEmail(email);
-        if (seller.isPresent()) {
-            return new UserDto(seller.get());
-        }
+//        Optional<Seller> seller = sellerRepository.findByEmail(email);
+//        if (seller.isPresent()) {
+//            return new UserDto(seller.get());
+//        }
         throw new AppException(ErrorCode.USER_NOT_FOUND);
-    }
-
-    @Transactional
-    public void updateUserRefreshToken(UserDto userDto, String refreshToken) {
-        String role = userDto.getRole();
-        if (role.equals(Role.ROLE_CUSTOMER.value())) {
-            System.out.println("+++++++++++++업데이트");
-            Customer customer = validateCustomerByEmail(userDto.getEmail());
-            customer.updateRefreshToken(refreshToken);
-        } else if (role.equals(Role.ROLE_SELLER.value())) {
-            Seller seller = validateSellerByEmail(userDto.getEmail());
-            seller.updateRefreshToken(refreshToken);
-        } else {
-            System.out.println("role = " + role);
-        }
     }
 }

@@ -6,6 +6,7 @@ import com.cotato.homecook.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,21 +22,39 @@ public class JwtUtils {
     private long refreshTokenTime;
     @Value("${jwt.secret}")
     private String jwtSecretKey;
-
-    public String createToken(UserDto userDto, String type) {
-        System.out.println("dfasfdsfdasf jwt "+jwtSecretKey);
+    private final StringRedisTemplate stringRedisTemplate;
+    public String createAccessToken(UserDto userDto, String role) {
         Claims claims = Jwts.claims();
         claims.put("email", userDto.getEmail());
         claims.put("username", userDto.getUsername());
-        claims.put("role", userDto.getRole());
+        claims.put("role", role);
+        long validTime = accessTokenTime;
         Date now = new Date();
-        long validTime = type.equals("access") ? accessTokenTime : refreshTokenTime;
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + validTime))
                 .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
                 .compact();
+    }
+
+
+    public String createRefreshToken(UserDto userDto){
+        Claims claims = Jwts.claims();
+        claims.put("email", userDto.getEmail());
+        claims.put("username", userDto.getUsername());
+        long validTime = accessTokenTime;
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + validTime))
+                .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
+                .compact();
+    }
+
+    public void updateUserRefreshToken(UserDto userDto, String refreshToken) {
+        stringRedisTemplate.opsForValue().set(userDto.getEmail(), refreshToken);
     }
 
     public boolean validateToken(String token) {

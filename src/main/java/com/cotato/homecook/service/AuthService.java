@@ -45,11 +45,14 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         UserDto userDto = validateService.validateUserByEmail(loginRequest.getEmail());
         if (passwordEncoder.matches(loginRequest.getPassword(), userDto.getPassword())) {
-            String accessToken = jwtUtils.createToken(userDto, "access");
-            String refreshToken = jwtUtils.createToken(userDto, "refresh");
-            validateService.updateUserRefreshToken(userDto, refreshToken);
+            String customerAccessToken = jwtUtils.createAccessToken(userDto,Role.ROLE_CUSTOMER.value());
+            String sellerAccessToken = jwtUtils.createAccessToken(userDto,Role.ROLE_SELLER.value());
+            String refreshToken = jwtUtils.createRefreshToken(userDto);
+
+            jwtUtils.updateUserRefreshToken(userDto, refreshToken);
             return LoginResponse.builder()
-                    .accessToken(accessToken)
+                    .customerAccessToken(customerAccessToken)
+                    .sellerAccessToken(sellerAccessToken)
                     .refreshToken(refreshToken)
                     .build();
         } else {
@@ -57,16 +60,17 @@ public class AuthService {
         }
     }
 
-    public ReissueResponse reissue(ReissueRequest reissueRequest) {
-        String refreshToken = reissueRequest.getRefreshToken();
-        if (jwtUtils.validateToken(refreshToken)) {
-            String email = jwtUtils.getEmailFromToken(refreshToken);
-            UserDto userDto = validateService.validateUserByEmail(email);
-            if (userDto.getRefreshToken() != null && userDto.getRefreshToken().equals(refreshToken)) {
-                return new ReissueResponse(jwtUtils.createToken(userDto, "access"));
-            }
-            throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
-        }
-        throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
-    }
-}
+//    public ReissueResponse reissue(ReissueRequest reissueRequest) {
+//        String refreshToken = reissueRequest.getRefreshToken();
+//        if (jwtUtils.validateToken(refreshToken)) {
+//            String email = jwtUtils.getEmailFromToken(refreshToken);
+//            UserDto userDto = validateService.validateUserByEmail(email);
+//            if (userDto.getRefreshToken() != null && userDto.getRefreshToken().equals(refreshToken)) {
+//                return new ReissueResponse(jwtUtils.createToken(userDto, "access"));
+//            }
+//            throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+//        }
+//        throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+//    }
+//}
+ }
