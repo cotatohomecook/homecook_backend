@@ -1,5 +1,6 @@
 package com.cotato.homecook.domain.entity;
 
+import com.cotato.homecook.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,4 +36,12 @@ public class Customer {
     private String email;
     private String password;
     private String phoneNumber;
+    private String refreshToken;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
 }

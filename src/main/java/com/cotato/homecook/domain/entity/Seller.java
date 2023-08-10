@@ -1,5 +1,6 @@
 package com.cotato.homecook.domain.entity;
 
+import com.cotato.homecook.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,4 +30,13 @@ public class Seller {
     private String bankName;
     private String accountNumber;
     private Date birthDate;
+    private String refreshToken;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
 }
