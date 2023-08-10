@@ -1,6 +1,5 @@
 package com.cotato.homecook.service;
 
-import com.cotato.homecook.domain.dto.menu.OrderInfoMenu;
 import com.cotato.homecook.domain.dto.menu.OrderMenu;
 import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
 import com.cotato.homecook.domain.dto.order.OrderInfoResponse;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +21,8 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final OrderQuantityRepository orderQuantityRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final ReviewRepository reviewRepository;
 
     public String makeOrder(OrderRequest orderRequest) {
         // TODO: Custom Exception으로 설정하기
@@ -37,13 +37,15 @@ public class OrderService {
         return "Order Complete";
     }
 
-    // TODO: 북마크 여부 넘겨줘야함
-    // TODO: 리뷰 작성 여부 넘겨줘야함
     public List<OrderInfoResponse> getOrderHistories() {
         return orderHistoryRepository.findByCustomer_CustomerId(329329L)
                 .stream()
-                .map(OrderInfoResponse::new)
-                .collect(Collectors.toList());
+                .map(orderHistory->{
+                    OrderInfoResponse orderInfoResponse = new OrderInfoResponse(orderHistory);
+                    orderInfoResponse.setIsBookmarked(bookmarkRepository.existsByCustomer_CustomerIdAndShop(329329L, orderHistory.getShop()));
+                    orderInfoResponse.setIsReviewWritten(reviewRepository.existsByOrderHistory(orderHistory));
+                    return orderInfoResponse;
+                }).collect(Collectors.toList());
     }
 
     public List<OrderHistorySellerResponse> getSellerInDeliveryOrders(Long shopId, String status) {

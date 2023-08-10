@@ -80,7 +80,7 @@ public class ShopService {
         Shop shop = shopRepository.findById(shopId).orElseThrow(RuntimeException::new);
         List<ShopOrderMenuResponse> menuList = new ArrayList<>();
         shop.getMenus().forEach(menu -> menuList.add(new ShopOrderMenuResponse(menu)));
-        boolean isBookmarked = bookmarkRepository.existsByCustomerAndShop(customer, shop);
+        boolean isBookmarked = bookmarkRepository.existsByCustomer_CustomerIdAndShop(customer.getCustomerId(), shop);
         Receipt receipt = receiptRepository.findFirstByShopOrderByUploadedAtDesc(shop)
                 .orElseThrow(() -> new AppException(ErrorCode.RECEIPT_NOT_FOUND));
         return new ShopInfoResponse(shop, menuList, isBookmarked, receipt.getImageUrl());
