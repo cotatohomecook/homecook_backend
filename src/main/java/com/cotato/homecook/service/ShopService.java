@@ -2,6 +2,8 @@ package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.menu.ShopDailyBestMenuResponse;
 import com.cotato.homecook.domain.dto.menu.ShopOrderMenuResponse;
+import com.cotato.homecook.domain.dto.receipt.ReceiptUploadRequest;
+import com.cotato.homecook.domain.dto.receipt.ReceiptUploadResponse;
 import com.cotato.homecook.domain.dto.shop.*;
 import com.cotato.homecook.domain.entity.Customer;
 import com.cotato.homecook.domain.entity.Menu;
@@ -9,7 +11,9 @@ import com.cotato.homecook.domain.entity.Receipt;
 import com.cotato.homecook.domain.entity.Shop;
 import com.cotato.homecook.exception.AppException;
 import com.cotato.homecook.exception.ErrorCode;
+import com.cotato.homecook.exception.ImageException;
 import com.cotato.homecook.repository.*;
+import com.cotato.homecook.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,11 +28,27 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ShopService {
+    private final S3Utils s3Utils;
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
     private final BookmarkRepository bookmarkRepository;
     private final CustomerRepository customerRepository;
     private final ReceiptRepository receiptRepository;
+    private final ValidateService validateService;
+
+    public ReceiptUploadResponse uploadReceipt(ReceiptUploadRequest receiptUploadRequest, Long shopId) throws ImageException {
+        Shop shop = validateService.validateShop(shopId);
+        validateService.checkDuplicateReceipt(shop);
+        String imageUrl = null;
+        if (!(receiptUploadRequest.getReceiptImage().isEmpty())) {
+            imageUrl = s3Utils.uploadFiles(receiptUploadRequest.getReceiptImage(), "receipt");
+        }
+        else {
+            throw new AppException(ErrorCode.IMAGE_PROCESSING_FAIL);
+        }
+        Receipt savedReceipt = receiptRepository.save(new Receipt(imageUrl, shop));
+        return ReceiptUploadResponse.toDto(savedReceipt);
+    }
 
     public List<ShopRankResponse> getRankTop10(double latitude, double longitude) {
         return shopRepository.findTop10ShopsByOrderCount(latitude, longitude);
@@ -65,6 +85,7 @@ public class ShopService {
                 .orElseThrow(() -> new AppException(ErrorCode.RECEIPT_NOT_FOUND));
         return new ShopInfoResponse(shop, menuList, isBookmarked, receipt.getImageUrl());
     }
+
     public Page<ShopBestMenuResponse> getSearchResultByShopName(double latitude, double longitude, String shopName, String orderBy, Pageable pageable) {
         Page<ShopBestMenuResponse> shopPageObject = shopRepository.findAllByShopName(latitude, longitude, shopName, orderBy, pageable);
         List<ShopBestMenuResponse> dtoList = shopPageObject.stream().collect(Collectors.toList())
@@ -95,7 +116,7 @@ public class ShopService {
         Long shopId = 10L;
         LocalDate currentDate = LocalDate.now();  // 현재 날짜
         LocalDate inputDate = LocalDate.parse(date); // 입력 받은 날짜(문자열)를 LocalDateTime 타입으로 변경
-        if(currentDate.equals(inputDate)) return getBestMenu2Days(inputDate, shopId);
+        if (currentDate.equals(inputDate)) return getBestMenu2Days(inputDate, shopId);
         else return getBestMenu3Days(inputDate, shopId);
     }
 
@@ -118,10 +139,9 @@ public class ShopService {
 
     private ShopDailyBestMenuResponse getShopDailyBestMenuResponse(LocalDate inputDate, Long shopId) {
         ShopDailyBestMenuResponse dailyBestMenu = menuRepository.findDailyBestMenuByDateAndShopId(inputDate.minusDays(1), shopId);
-        if(dailyBestMenu == null) { // 존재하지 않는다면
+        if (dailyBestMenu == null) { // 존재하지 않는다면
             return new ShopDailyBestMenuResponse(inputDate); // 날짜만 반환
-        }
-        else {
+        } else {
             dailyBestMenu.setLocalDate(inputDate);
             return dailyBestMenu;
         }
