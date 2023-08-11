@@ -43,7 +43,7 @@ public class JwtUtils {
         Claims claims = Jwts.claims();
         claims.put("email", userDto.getEmail());
         claims.put("username", userDto.getUsername());
-        long validTime = accessTokenTime;
+        long validTime = refreshTokenTime;
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
