@@ -2,6 +2,8 @@ package com.cotato.homecook.service;
 
 import com.cotato.homecook.domain.dto.auth.UserDto;
 import com.cotato.homecook.domain.dto.order.OrderHistoryInfoResponse;
+import com.cotato.homecook.domain.dto.seller.DocumentValidationRequest;
+import com.cotato.homecook.domain.dto.seller.DocumentValidationResponse;
 import com.cotato.homecook.domain.entity.*;
 import com.cotato.homecook.enums.Role;
 import com.cotato.homecook.exception.AppException;
@@ -28,6 +30,10 @@ public class ValidateService {
     private final ReceiptRepository receiptRepository;
     private final CustomerRepository customerRepository;
     private final SellerRepository sellerRepository;
+
+    public DocumentValidationResponse validateDocument(DocumentValidationRequest documentValidationRequest){
+        return new DocumentValidationResponse(true);
+    }
 
     public void checkDuplicateReceipt(Shop shop) {
         LocalDate today = LocalDate.now();
