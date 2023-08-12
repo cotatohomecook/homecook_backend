@@ -45,6 +45,7 @@ public class ReviewService {
     }
 
     public ReviewResponse getReview(Long reviewId) {
-        return ReviewResponse.builder().build();
+        Review review = validateService.validateReview(reviewId);
+        return ReviewResponse.toDto(review);
     }
 }

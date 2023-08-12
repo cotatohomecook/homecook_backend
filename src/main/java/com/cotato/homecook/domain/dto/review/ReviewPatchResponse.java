@@ -13,9 +13,11 @@ import lombok.NoArgsConstructor;
 public class ReviewPatchResponse {
     Long reviewId;
     String content;
+    private double rating;
 
     public static ReviewPatchResponse toDto(Review review) {
         return ReviewPatchResponse.builder().reviewId(review.getReviewId())
-                .content(review.getContent()).build();
+                .content(review.getContent())
+                .rating(review.getRating()).build();
     }
 }

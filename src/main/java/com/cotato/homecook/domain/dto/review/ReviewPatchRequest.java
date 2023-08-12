@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReviewPatchRequest {
     String content;
+    private double rating;
 }
