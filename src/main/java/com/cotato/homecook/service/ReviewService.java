@@ -1,9 +1,6 @@
 package com.cotato.homecook.service;
 
-import com.cotato.homecook.domain.dto.review.ReviewPatchRequest;
-import com.cotato.homecook.domain.dto.review.ReviewPatchResponse;
-import com.cotato.homecook.domain.dto.review.ReviewWriteRequest;
-import com.cotato.homecook.domain.dto.review.ReviewWriteResponse;
+import com.cotato.homecook.domain.dto.review.*;
 import com.cotato.homecook.domain.entity.OrderHistory;
 import com.cotato.homecook.domain.entity.Review;
 import com.cotato.homecook.exception.ImageException;
@@ -39,6 +36,7 @@ public class ReviewService {
     public ReviewPatchResponse patchReview(Long reviewId, ReviewPatchRequest patchRequest){
         Review review = validateService.validateReview(reviewId);
         review.updateContent(patchRequest.getContent());
+        review.updateRating(patchRequest.getRating());
         return ReviewPatchResponse.toDto(review);
     }
     public ReviewWriteResponse deleteReview(Long reviewId) {
@@ -46,4 +44,7 @@ public class ReviewService {
         return ReviewWriteResponse.builder().reviewId(reviewId).build();
     }
 
+    public ReviewResponse getReview(Long reviewId) {
+        return ReviewResponse.builder().build();
+    }
 }

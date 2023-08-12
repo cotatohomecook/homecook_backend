@@ -45,4 +45,6 @@ public class Review {
     public void updateContent(String content) {
         this.content = content;
     }
+
+    public void updateRating(double rating) {this.rating = rating;}
 }
