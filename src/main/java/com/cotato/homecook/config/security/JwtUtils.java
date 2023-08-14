@@ -61,6 +61,12 @@ public class JwtUtils {
         return stringRedisTemplate.opsForValue().get(email);
     }
 
+    public void deleteRefreshTokenByEmail(String email){
+        if(getUserRefreshToken(email)!= null ){
+            stringRedisTemplate.delete(email);
+        }
+    }
+
     public boolean validateToken(String token) {
         if (!StringUtils.hasText(token)) {
             throw new AppException(ErrorCode.JWT_TOKEN_NOT_EXISTS);
