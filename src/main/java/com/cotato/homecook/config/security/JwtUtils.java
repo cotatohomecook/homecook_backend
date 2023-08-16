@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Component
@@ -23,6 +24,7 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecretKey;
     private final StringRedisTemplate stringRedisTemplate;
+
     public String createAccessToken(UserDto userDto, String role) {
         Claims claims = Jwts.claims();
         claims.put("email", userDto.getEmail());
@@ -39,7 +41,7 @@ public class JwtUtils {
     }
 
 
-    public String createRefreshToken(UserDto userDto){
+    public String createRefreshToken(UserDto userDto) {
         Claims claims = Jwts.claims();
         claims.put("email", userDto.getEmail());
         claims.put("username", userDto.getUsername());
@@ -54,15 +56,15 @@ public class JwtUtils {
     }
 
     public void updateUserRefreshToken(UserDto userDto, String refreshToken) {
-        stringRedisTemplate.opsForValue().set(userDto.getEmail(), refreshToken);
+        stringRedisTemplate.opsForValue().set(userDto.getEmail(), refreshToken, refreshTokenTime, TimeUnit.MILLISECONDS);
     }
 
     public String getUserRefreshToken(String email) {
         return stringRedisTemplate.opsForValue().get(email);
     }
 
-    public void deleteRefreshTokenByEmail(String email){
-        if(getUserRefreshToken(email)!= null ){
+    public void deleteRefreshTokenByEmail(String email) {
+        if (getUserRefreshToken(email) != null) {
             stringRedisTemplate.delete(email);
         }
     }
