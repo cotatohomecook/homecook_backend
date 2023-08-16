@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,6 +74,9 @@ public class JwtUtils {
         if (!StringUtils.hasText(token)) {
             throw new AppException(ErrorCode.JWT_TOKEN_NOT_EXISTS);
         }
+        if(isLogout(token)){
+            throw new AppException(ErrorCode.JWT_TOKEN_EXPIRED);
+        }
         try {
             Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
             return true;
@@ -81,6 +85,20 @@ public class JwtUtils {
         } catch (ExpiredJwtException e) {
             throw new AppException(ErrorCode.JWT_TOKEN_EXPIRED);
         }
+    }
+
+    public void setBlackList(String accessToken) {
+        Long expiration = getExpiration(accessToken);
+        stringRedisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean isLogout(String accessToken) {
+        return !ObjectUtils.isEmpty(stringRedisTemplate.opsForValue().get(accessToken));
+    }
+
+    public Long getExpiration(String token) {
+        Date expiration = getClaims(token).getExpiration();
+        return expiration.getTime() - new Date().getTime();
     }
 
     public String getEmailFromToken(String token) {

@@ -81,6 +81,8 @@ public class AuthService {
         if (jwtUtils.validateToken(refreshToken)) {
             String email = jwtUtils.getEmailFromToken(refreshToken);
             jwtUtils.deleteRefreshTokenByEmail(email);
+            jwtUtils.setBlackList(logoutRequest.getCustomerAccessToken());
+            jwtUtils.setBlackList(logoutRequest.getSellerAccessToken());
         } else {
             throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
         }
