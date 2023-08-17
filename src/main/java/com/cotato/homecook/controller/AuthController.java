@@ -33,6 +33,12 @@ public class AuthController {
         return ApiResponse.createSuccess(authService.reissue(reissueRequest));
     }
 
+    @DeleteMapping("/logout")
+    public ApiResponse<?> logout(@RequestBody LogoutRequest logoutRequest) {
+        authService.logout(logoutRequest);
+        return ApiResponse.createSuccessWithNoData("로그아웃 성공");
+    }
+
     @GetMapping("/test")
     public ApiResponse<String> test() {
         ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();

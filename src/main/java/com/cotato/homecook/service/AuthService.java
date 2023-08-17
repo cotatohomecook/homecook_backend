@@ -45,8 +45,8 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         UserDto userDto = validateService.validateUserByEmail(loginRequest.getEmail());
         if (passwordEncoder.matches(loginRequest.getPassword(), userDto.getPassword())) {
-            String customerAccessToken = jwtUtils.createAccessToken(userDto,Role.ROLE_CUSTOMER.value());
-            String sellerAccessToken = jwtUtils.createAccessToken(userDto,Role.ROLE_SELLER.value());
+            String customerAccessToken = jwtUtils.createAccessToken(userDto, Role.ROLE_CUSTOMER.value());
+            String sellerAccessToken = jwtUtils.createAccessToken(userDto, Role.ROLE_SELLER.value());
             String refreshToken = jwtUtils.createRefreshToken(userDto);
 
             jwtUtils.updateUserRefreshToken(userDto, refreshToken);
@@ -68,9 +68,23 @@ public class AuthService {
             String userRefreshToken = jwtUtils.getUserRefreshToken(email);
             if (userRefreshToken != null && userRefreshToken.equals(refreshToken)) {
                 return new ReissueResponse(jwtUtils.createAccessToken(userDto, reissueRequest.getRole()));
+            } else {
+                throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
             }
+        } else {
             throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
         }
-        throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+    }
+
+    public void logout(LogoutRequest logoutRequest) {
+        String refreshToken = logoutRequest.getRefreshToken();
+        if (jwtUtils.validateToken(refreshToken)) {
+            String email = jwtUtils.getEmailFromToken(refreshToken);
+            jwtUtils.deleteRefreshTokenByEmail(email);
+            jwtUtils.setBlackList(logoutRequest.getCustomerAccessToken());
+            jwtUtils.setBlackList(logoutRequest.getSellerAccessToken());
+        } else {
+            throw new AppException(ErrorCode.WRONG_JWT_TOKEN);
+        }
     }
 }
